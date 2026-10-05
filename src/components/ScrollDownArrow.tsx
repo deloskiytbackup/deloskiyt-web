@@ -3,13 +3,13 @@ export function ScrollDownArrow({ targetId = "portfolio" }: { targetId?: string 
     <a
       href={`#${targetId}`}
       aria-label="Przejdź do portfolio"
-      className="absolute bottom-6 sm:bottom-8 px-4 py-2.5 rounded-full liquid-glass liquid-glass-interactive flex items-center gap-2 text-zinc-400 hover:text-white active:scale-95 transition-all touch-manipulation group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+      className="absolute bottom-6 sm:bottom-8 p-3 flex flex-col items-center gap-1.5 text-zinc-500 hover:text-white active:scale-95 transition-all touch-manipulation group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
     >
-      <span className="text-[11px] sm:text-xs font-medium uppercase tracking-widest text-zinc-400 group-hover:text-zinc-200 transition-colors">
+      <span className="text-[10px] sm:text-xs uppercase tracking-widest text-zinc-500 group-hover:text-zinc-300 transition-colors">
         Portfolio
       </span>
       <svg
-        className="w-4 h-4 text-zinc-400 group-hover:text-white animate-bounce"
+        className="w-5 h-5 sm:w-6 sm:h-6 animate-bounce"
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"
