@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { getSessionUser } from "@/lib/auth";
-import { AuthForm } from "@/components/AuthForm";
+import { RegisterForm } from "@/components/RegisterForm";
 
 export const metadata: Metadata = {
   title: "Rejestracja",
@@ -48,7 +48,7 @@ export default async function RegisterPage() {
             </p>
           </div>
 
-          <AuthForm defaultMode="register" />
+          <RegisterForm />
         </div>
       </div>
 

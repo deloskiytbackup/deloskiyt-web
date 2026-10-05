@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { getSessionUser } from "@/lib/auth";
-import { AuthForm } from "@/components/AuthForm";
+import { LoginForm } from "@/components/LoginForm";
 
 export const metadata: Metadata = {
   title: "Logowanie",
@@ -38,17 +38,17 @@ export default async function LoginPage() {
         <div className="space-y-8">
           <div className="text-center space-y-2">
             <span className="text-xs font-semibold uppercase tracking-widest text-zinc-500">
-              Autoryzacja
+              Strefa Klienta
             </span>
             <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight">
               Logowanie
             </h1>
             <p className="text-sm text-zinc-400 max-w-md mx-auto">
-              Zaloguj się lub utwórz nowe konto, aby przejść do Panelu Klienta.
+              Wpisz swoje dane, aby przejść do panelu zleceń.
             </p>
           </div>
 
-          <AuthForm />
+          <LoginForm />
         </div>
       </div>
 
