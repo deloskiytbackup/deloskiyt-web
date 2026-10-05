@@ -6,15 +6,18 @@ export function ProjectCard({ project }: { project: Project }) {
       href={project.link}
       target="_blank"
       rel="noopener noreferrer"
-      className="group flex flex-col justify-between p-5 sm:p-6 rounded-2xl bg-zinc-950 border border-zinc-800/80 hover:border-zinc-600 active:border-zinc-500 active:bg-zinc-900/60 active:scale-[0.99] transition-all duration-200 touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+      className="group relative flex flex-col justify-between p-6 sm:p-7 rounded-2xl liquid-glass liquid-glass-interactive overflow-hidden active:scale-[0.99] transition-all duration-300 touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
     >
-      <div className="space-y-3">
+      {/* Subtelny odblask świetlny w rogu karty */}
+      <div className="absolute -top-12 -right-12 w-32 h-32 bg-white/[0.04] rounded-full blur-2xl group-hover:bg-white/[0.09] transition-colors pointer-events-none" />
+
+      <div className="space-y-3 relative z-10">
         <div className="flex items-center justify-between">
-          <span className="text-xs font-medium text-zinc-500 uppercase tracking-wider">
+          <span className="text-[11px] sm:text-xs font-semibold text-zinc-400 uppercase tracking-wider">
             {project.category}
           </span>
           <svg
-            className="w-4 h-4 text-zinc-600 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all"
+            className="w-4 h-4 text-zinc-500 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -23,19 +26,19 @@ export function ProjectCard({ project }: { project: Project }) {
             <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
           </svg>
         </div>
-        <h3 className="text-lg sm:text-xl font-semibold text-white group-hover:text-zinc-100">
+        <h3 className="text-xl font-bold text-white group-hover:text-zinc-100 tracking-tight">
           {project.title}
         </h3>
-        <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed">
+        <p className="text-xs sm:text-sm text-zinc-300/80 leading-relaxed">
           {project.description}
         </p>
       </div>
 
-      <div className="flex flex-wrap gap-2 mt-5 sm:mt-6">
+      <div className="flex flex-wrap gap-2 mt-6 relative z-10">
         {project.tags.map((tag) => (
           <span
             key={tag}
-            className="text-[11px] sm:text-xs px-2.5 py-1 rounded-md bg-zinc-900 text-zinc-400 border border-zinc-800"
+            className="text-[11px] sm:text-xs px-2.5 py-1 rounded-lg bg-white/[0.04] text-zinc-300 border border-white/[0.08] backdrop-blur-sm"
           >
             #{tag}
           </span>
