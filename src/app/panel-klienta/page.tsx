@@ -1,16 +1,21 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { getSessionUser } from "@/lib/auth";
-import { AuthForm } from "@/components/AuthForm";
 import { ClientDashboard } from "@/components/ClientDashboard";
 
 export const metadata: Metadata = {
   title: "Panel Klienta",
-  description: "Panel Klienta deloskiyt - logowanie, rejestracja i status zleceń.",
+  description: "Panel Klienta deloskiyt - zlecenia i status projektów.",
 };
 
 export default async function PanelKlientaPage() {
   const user = await getSessionUser();
+
+  // Niezalogowany użytkownik jest automatycznie przekierowywany do /login
+  if (!user) {
+    redirect("/login");
+  }
 
   return (
     <main className="min-h-screen bg-black text-white px-4 sm:px-6 py-12 sm:py-20 max-w-4xl mx-auto w-full flex flex-col justify-between">
@@ -31,25 +36,7 @@ export default async function PanelKlientaPage() {
           <span>Powrót na stronę główną</span>
         </Link>
 
-        {user ? (
-          <ClientDashboard user={user} />
-        ) : (
-          <div className="space-y-8">
-            <div className="text-center space-y-2">
-              <span className="text-xs font-semibold uppercase tracking-widest text-zinc-500">
-                Strefa Klienta
-              </span>
-              <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight">
-                Panel Klienta
-              </h1>
-              <p className="text-sm text-zinc-400 max-w-md mx-auto">
-                Zaloguj się lub zarejestruj, aby śledzić realizację swoich zleceń w czasie rzeczywistym.
-              </p>
-            </div>
-
-            <AuthForm />
-          </div>
-        )}
+        <ClientDashboard user={user} />
       </div>
 
       <footer className="mt-16 pt-8 border-t border-zinc-900 text-xs text-zinc-600 flex justify-between">

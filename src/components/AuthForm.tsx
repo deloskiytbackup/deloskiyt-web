@@ -137,6 +137,16 @@ export function AuthForm({ defaultMode = "login" }: { defaultMode?: "login" | "r
           >
             {isPending ? "Logowanie..." : "Zaloguj się"}
           </button>
+
+          <div className="pt-2 text-center">
+            <button
+              type="button"
+              onClick={() => setMode("register")}
+              className="text-xs text-zinc-400 hover:text-white transition-colors cursor-pointer"
+            >
+              Nie masz jeszcze konta? <span className="text-white underline underline-offset-4">Zarejestruj się</span>
+            </button>
+          </div>
         </form>
       ) : (
         <form action={registerDispatch} className="space-y-4">
@@ -180,6 +190,16 @@ export function AuthForm({ defaultMode = "login" }: { defaultMode?: "login" | "r
           >
             {isPending ? "Rejestracja..." : "Zarejestruj się"}
           </button>
+
+          <div className="pt-2 text-center">
+            <button
+              type="button"
+              onClick={() => setMode("login")}
+              className="text-xs text-zinc-400 hover:text-white transition-colors cursor-pointer"
+            >
+              Masz już konto? <span className="text-white underline underline-offset-4">Zaloguj się</span>
+            </button>
+          </div>
         </form>
       )}
     </div>
