@@ -3,9 +3,9 @@ export function ScrollDownArrow({ targetId = "portfolio" }: { targetId?: string 
     <a
       href={`#${targetId}`}
       aria-label="Przejdź do portfolio"
-      className="absolute bottom-6 sm:bottom-8 p-3 flex flex-col items-center gap-1.5 text-zinc-500 hover:text-white active:scale-95 transition-all touch-manipulation group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+      className="p-3 flex flex-col items-center gap-1.5 text-zinc-500 hover:text-white active:scale-95 transition-all touch-manipulation group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
     >
-      <span className="text-[10px] sm:text-xs uppercase tracking-widest text-zinc-500 group-hover:text-zinc-300 transition-colors">
+      <span className="text-[10px] sm:text-xs uppercase tracking-widest text-zinc-500 group-hover:text-zinc-300 transition-colors whitespace-nowrap">
         Portfolio
       </span>
       <svg

@@ -30,6 +30,7 @@ export function Hero() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8, delay: 0.4 }}
+        className="absolute bottom-6 sm:bottom-8 inset-x-0 mx-auto w-fit flex flex-col items-center z-20"
       >
         <ScrollDownArrow targetId="portfolio" />
       </motion.div>
