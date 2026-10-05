@@ -3,7 +3,6 @@
 import { motion } from "framer-motion";
 import { SocialLinks } from "./SocialLinks";
 import { ScrollDownArrow } from "./ScrollDownArrow";
-import { DiscordStatus } from "./DiscordStatus";
 
 export function Hero() {
   return (
@@ -19,17 +18,9 @@ export function Hero() {
         </motion.h1>
 
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, delay: 0.15 }}
-        >
-          <DiscordStatus />
-        </motion.div>
-
-        <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.25 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
         >
           <SocialLinks />
         </motion.div>
@@ -38,7 +29,7 @@ export function Hero() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.8, delay: 0.5 }}
+        transition={{ duration: 0.8, delay: 0.4 }}
       >
         <ScrollDownArrow targetId="portfolio" />
       </motion.div>

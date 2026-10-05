@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { projects } from "@/data/projects";
 import { ProjectCard } from "./ProjectCard";
@@ -43,18 +44,36 @@ export function Portfolio() {
         ))}
       </div>
 
-      {/* Powrót na górę & stopka */}
-      <div className="mt-12 sm:mt-16 pt-6 sm:pt-8 border-t border-zinc-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-600 pb-8">
-        <span>© {new Date().getFullYear()} deloskiyt</span>
-        <a
-          href="#"
-          className="hover:text-zinc-300 active:text-white transition-colors flex items-center gap-1.5 p-2 touch-manipulation"
-        >
-          <span>Wróć na górę</span>
-          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
-          </svg>
-        </a>
+      {/* Powrót na górę & stopka z linkami */}
+      <div className="mt-14 sm:mt-20 pt-8 border-t border-zinc-900 flex flex-col sm:flex-row items-center justify-between gap-5 text-xs text-zinc-500 pb-10">
+        <div className="flex items-center gap-6">
+          <Link
+            href="/regulamin"
+            className="hover:text-white transition-colors underline-offset-4 hover:underline"
+          >
+            Regulamin
+          </Link>
+          <span className="text-zinc-800">•</span>
+          <Link
+            href="/panel-klienta"
+            className="hover:text-white transition-colors underline-offset-4 hover:underline"
+          >
+            Panel Klienta
+          </Link>
+        </div>
+
+        <div className="flex items-center gap-6">
+          <span>© {new Date().getFullYear()} deloskiyt</span>
+          <a
+            href="#"
+            className="hover:text-zinc-300 active:text-white transition-colors flex items-center gap-1.5 p-1 touch-manipulation"
+          >
+            <span>Wróć na górę</span>
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+            </svg>
+          </a>
+        </div>
       </div>
     </section>
   );
