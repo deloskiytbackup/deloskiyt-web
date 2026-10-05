@@ -5,6 +5,8 @@ export interface SocialLink {
   hoverColor: string;
 }
 
+export const DISCORD_USER_ID = "990607268879929354";
+
 export const socialLinks: SocialLink[] = [
   {
     id: "youtube",
@@ -15,13 +17,13 @@ export const socialLinks: SocialLink[] = [
   {
     id: "spotify",
     name: "Spotify",
-    url: "https://open.spotify.com",
+    url: "https://open.spotify.com/user/deloskiyt",
     hoverColor: "hover:text-[#1DB954]",
   },
   {
     id: "discord",
     name: "Discord",
-    url: "https://discord.gg",
+    url: `https://discord.com/users/${DISCORD_USER_ID}`,
     hoverColor: "hover:text-[#5865F2]",
   },
 ];

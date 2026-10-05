@@ -13,14 +13,34 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "deloskiyt",
-  description: "Oficjalna strona deloskiyt - YouTube, Spotify, Discord",
+  metadataBase: new URL("https://deloskiyt-web.vercel.app"),
+  title: {
+    default: "deloskiyt",
+    template: "%s | deloskiyt",
+  },
+  description: "Oficjalna strona deloskiyt - YouTube, Spotify, Discord oraz portfolio.",
+  keywords: ["deloskiyt", "youtube", "spotify", "discord", "portfolio", "twórca"],
+  authors: [{ name: "deloskiyt" }],
+  creator: "deloskiyt",
+  openGraph: {
+    type: "website",
+    locale: "pl_PL",
+    url: "https://deloskiyt-web.vercel.app",
+    title: "deloskiyt",
+    description: "Oficjalna strona deloskiyt - YouTube, Spotify, Discord oraz portfolio.",
+    siteName: "deloskiyt",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "deloskiyt",
+    description: "Oficjalna strona deloskiyt - YouTube, Spotify, Discord oraz portfolio.",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
-      lang="en"
+      lang="pl"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased scroll-smooth`}
     >
       <body className="min-h-full flex flex-col bg-black text-white">{children}</body>
