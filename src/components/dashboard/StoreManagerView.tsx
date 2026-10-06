@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -29,6 +29,56 @@ export function StoreManagerView({ products: initialProducts }: StoreManagerView
   const [products, setProducts] = useState<ManagedProduct[]>(initialProducts);
   const [showAddForm, setShowAddForm] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Statusy i przełączniki systemu
+  const [settings, setSettings] = useState<{
+    storeEnabled: boolean;
+    clientPortalEnabled: boolean;
+    maintenance: boolean;
+  }>({
+    storeEnabled: true,
+    clientPortalEnabled: true,
+    maintenance: false,
+  });
+  const [loadingSettings, setLoadingSettings] = useState(true);
+  const [savingKey, setSavingKey] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch("/api/settings")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data && typeof data.storeEnabled === "boolean") {
+          setSettings(data);
+        }
+      })
+      .catch((err) => console.error("Error loading settings:", err))
+      .finally(() => setLoadingSettings(false));
+  }, []);
+
+  const handleToggleSetting = async (
+    key: "store_enabled" | "client_portal_enabled" | "maintenance_mode",
+    currentVal: boolean
+  ) => {
+    setSavingKey(key);
+    try {
+      const res = await fetch("/api/settings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ key, enabled: !currentVal }),
+      });
+      const data = await res.json();
+      if (res.ok && data.settings) {
+        setSettings(data.settings);
+        router.refresh();
+      } else {
+        alert(data.error || "Błąd zapisu ustawienia.");
+      }
+    } catch {
+      alert("Błąd połączenia z serwerem.");
+    } finally {
+      setSavingKey(null);
+    }
+  };
 
   // Formularz nowego produktu
   const [name, setName] = useState("");
@@ -163,7 +213,139 @@ export function StoreManagerView({ products: initialProducts }: StoreManagerView
         </div>
       </div>
 
-      {/* Formularz Wystawiania Nowego Produktu */}
+      {/* Karta Kontroli Dostępności Strony i Sklepu */}
+      <div className="p-6 rounded-3xl bg-zinc-950 border border-zinc-800">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-900 pb-4 mb-5">
+          <div>
+            <h2 className="text-sm sm:text-base font-bold text-white flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              Przełączniki Dostępności i Konserwacji
+            </h2>
+            <p className="text-xs text-zinc-400 mt-0.5">
+              Steruj natychmiastowym włączaniem i wyłączaniem modułów dla odwiedzających.
+            </p>
+          </div>
+          {loadingSettings && (
+            <span className="text-xs text-zinc-500">Pobieranie statusu...</span>
+          )}
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Przełącznik Sklepu */}
+          <div className="p-4 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 flex flex-col justify-between gap-4">
+            <div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-white uppercase tracking-wider">
+                  Sklep WWW
+                </span>
+                <span
+                  className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase ${
+                    settings.storeEnabled
+                      ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                      : "bg-red-500/10 text-red-400 border border-red-500/20"
+                  }`}
+                >
+                  {settings.storeEnabled ? "Włączony" : "Wyłączony"}
+                </span>
+              </div>
+              <p className="text-xs text-zinc-400 mt-1.5 leading-relaxed">
+                Gdy wyłączony, strona <code className="text-zinc-300">/sklep</code> wyświetla komunikat o przerwie, a koszyk i zakupy są zablokowane.
+              </p>
+            </div>
+            <button
+              onClick={() => handleToggleSetting("store_enabled", settings.storeEnabled)}
+              disabled={savingKey === "store_enabled"}
+              className={`w-full py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                settings.storeEnabled
+                  ? "bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 active:scale-95"
+                  : "bg-emerald-500 hover:bg-emerald-400 text-black shadow-lg shadow-emerald-500/20 active:scale-95"
+              }`}
+            >
+              {savingKey === "store_enabled"
+                ? "Zapisywanie..."
+                : settings.storeEnabled
+                ? "Wyłącz Sklep"
+                : "Włącz Sklep"}
+            </button>
+          </div>
+
+          {/* Przełącznik Panelu Klienta */}
+          <div className="p-4 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 flex flex-col justify-between gap-4">
+            <div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-white uppercase tracking-wider">
+                  Panel Klienta
+                </span>
+                <span
+                  className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase ${
+                    settings.clientPortalEnabled
+                      ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                      : "bg-red-500/10 text-red-400 border border-red-500/20"
+                  }`}
+                >
+                  {settings.clientPortalEnabled ? "Włączony" : "Wyłączony"}
+                </span>
+              </div>
+              <p className="text-xs text-zinc-400 mt-1.5 leading-relaxed">
+                Gdy wyłączony, zwykli klienci widzą ekran konserwacyjny (administratorzy nadal zachowują pełny dostęp).
+              </p>
+            </div>
+            <button
+              onClick={() => handleToggleSetting("client_portal_enabled", settings.clientPortalEnabled)}
+              disabled={savingKey === "client_portal_enabled"}
+              className={`w-full py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                settings.clientPortalEnabled
+                  ? "bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 active:scale-95"
+                  : "bg-emerald-500 hover:bg-emerald-400 text-black shadow-lg shadow-emerald-500/20 active:scale-95"
+              }`}
+            >
+              {savingKey === "client_portal_enabled"
+                ? "Zapisywanie..."
+                : settings.clientPortalEnabled
+                ? "Wyłącz Panel Klienta"
+                : "Włącz Panel Klienta"}
+            </button>
+          </div>
+
+          {/* Przełącznik Trybu Przerwy Technicznej (Cała strona) */}
+          <div className="p-4 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 flex flex-col justify-between gap-4">
+            <div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-white uppercase tracking-wider">
+                  Cała Strona (Przerwa)
+                </span>
+                <span
+                  className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase ${
+                    settings.maintenance
+                      ? "bg-amber-500/10 text-amber-400 border border-amber-500/20"
+                      : "bg-zinc-800 text-zinc-400 border border-zinc-700"
+                  }`}
+                >
+                  {settings.maintenance ? "Aktywny" : "Nieaktywny"}
+                </span>
+              </div>
+              <p className="text-xs text-zinc-400 mt-1.5 leading-relaxed">
+                Włącza pełnoekranowy tryb „Zmieniamy się na lepsze” dla wszystkich odwiedzających stronę główną.
+              </p>
+            </div>
+            <button
+              onClick={() => handleToggleSetting("maintenance_mode", settings.maintenance)}
+              disabled={savingKey === "maintenance_mode"}
+              className={`w-full py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                settings.maintenance
+                  ? "bg-zinc-800 hover:bg-zinc-700 text-white active:scale-95"
+                  : "bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/30 active:scale-95"
+              }`}
+            >
+              {savingKey === "maintenance_mode"
+                ? "Zapisywanie..."
+                : settings.maintenance
+                ? "Wyłącz Przerwę (Otwórz stronę)"
+                : "Włącz Przerwę Techniczną"}
+            </button>
+          </div>
+        </div>
+      </div>
       {showAddForm && (
         <form onSubmit={handleCreate} className="p-6 sm:p-8 rounded-3xl bg-zinc-950 border border-zinc-850 space-y-5">
           <div className="flex items-center justify-between border-b border-zinc-900 pb-3">

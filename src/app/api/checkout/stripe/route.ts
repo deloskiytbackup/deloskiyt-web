@@ -2,9 +2,18 @@ import { NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import prisma from "@/lib/prisma";
 import { getSessionUser } from "@/lib/auth";
+import { getStoreEnabled } from "@/lib/settings";
 
 export async function POST(request: Request) {
   try {
+    const isStoreEnabled = await getStoreEnabled();
+    if (!isStoreEnabled) {
+      return NextResponse.json(
+        { error: "Sklep jest obecnie wyłączony przez administratora." },
+        { status: 403 }
+      );
+    }
+
     if (!stripe) {
       return NextResponse.json(
         { error: "Płatności Stripe nie zostały jeszcze aktywowane (brak klucza STRIPE_SECRET_KEY)." },
