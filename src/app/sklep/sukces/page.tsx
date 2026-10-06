@@ -13,45 +13,32 @@ interface LicenseData {
 function SukcesContent() {
   const searchParams = useSearchParams();
   const sessionId = searchParams.get("session_id");
-  const demoOrder = searchParams.get("demo_order");
-  const demoLicensesRaw = searchParams.get("licenses");
 
   const [isLoading, setIsLoading] = useState(true);
-  const [orderNumber, setOrderNumber] = useState<string | null>(demoOrder);
+  const [orderNumber, setOrderNumber] = useState<string | null>(null);
   const [licenses, setLicenses] = useState<LicenseData[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // 1. Obsługa trybu demo / symulacji
-    if (demoLicensesRaw) {
-      try {
-        const parsed = JSON.parse(decodeURIComponent(demoLicensesRaw));
-        setLicenses(parsed);
-        setIsLoading(false);
-        return;
-      } catch (e) {
-        console.error(e);
-      }
+    if (!sessionId) {
+      setError("Brak identyfikatora sesji płatności Stripe.");
+      setIsLoading(false);
+      return;
     }
 
-    // 2. Weryfikacja prawdziwej sesji Stripe
-    if (sessionId) {
-      fetch(`/api/checkout/verify?session_id=${sessionId}`)
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.success) {
-            setOrderNumber(data.orderNumber);
-            setLicenses(data.licenses || []);
-          } else {
-            setError(data.error || "Nie udało się zweryfikować sesji płatności.");
-          }
-        })
-        .catch(() => setError("Błąd połączenia z serwerem podczas weryfikacji."))
-        .finally(() => setIsLoading(false));
-    } else if (!demoOrder) {
-      setIsLoading(false);
-    }
-  }, [sessionId, demoOrder, demoLicensesRaw]);
+    fetch(`/api/checkout/verify?session_id=${sessionId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          setOrderNumber(data.orderNumber);
+          setLicenses(data.licenses || []);
+        } else {
+          setError(data.error || "Nie udało się zweryfikować sesji płatności.");
+        }
+      })
+      .catch(() => setError("Błąd połączenia z serwerem podczas weryfikacji płatności."))
+      .finally(() => setIsLoading(false));
+  }, [sessionId]);
 
   return (
     <div className="min-h-screen bg-black text-white flex flex-col justify-between p-4 sm:p-8">
