@@ -53,20 +53,10 @@ export function Portfolio() {
         <div className="flex items-center gap-6">
           <Link
             href="/sklep"
-            className="hover:text-emerald-400 text-zinc-300 font-semibold transition-colors underline-offset-4 hover:underline flex items-center gap-1.5"
-          >
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-            <span>Sklep</span>
-          </Link>
-          <span className="text-zinc-800">•</span>
-          <a
-            href="https://github.com/deloskiytbackup"
-            target="_blank"
-            rel="noopener noreferrer"
             className="hover:text-white transition-colors underline-offset-4 hover:underline"
           >
-            GitHub
-          </a>
+            Sklep
+          </Link>
           <span className="text-zinc-800">•</span>
           <Link
             href="/regulamin"
