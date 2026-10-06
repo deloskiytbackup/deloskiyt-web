@@ -12,7 +12,6 @@ interface DashboardSidebarProps {
   setMobileMenuOpen: (open: boolean) => void;
   isCollapsed: boolean;
   setIsCollapsed: (collapsed: boolean) => void;
-  totalOrders: number;
   productsCount: number;
   licensesCount: number;
 }
@@ -25,7 +24,6 @@ export function DashboardSidebar({
   setMobileMenuOpen,
   isCollapsed,
   setIsCollapsed,
-  totalOrders,
   productsCount,
   licensesCount,
 }: DashboardSidebarProps) {
@@ -85,37 +83,6 @@ export function DashboardSidebar({
 
         {/* Nawigacja */}
         <nav className="space-y-1.5">
-          {/* Twoje Zlecenia */}
-          <Link
-            href="/panel-klienta"
-            onClick={() => {
-              setActiveTab("orders");
-              setMobileMenuOpen(false);
-            }}
-            title="Twoje Zlecenia"
-            className={`w-full flex items-center ${
-              isCollapsed ? "justify-center px-2 py-3" : "gap-3 px-3 py-2.5"
-            } rounded-xl text-xs font-semibold transition-all cursor-pointer ${
-              activeTab === "orders"
-                ? "bg-white text-black shadow-sm"
-                : "text-zinc-400 hover:text-white hover:bg-zinc-900/60"
-            }`}
-          >
-            <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            {!isCollapsed && <span>Twoje Zlecenia</span>}
-            {!isCollapsed && totalOrders > 0 && (
-              <span
-                className={`ml-auto text-[10px] px-1.5 py-0.5 rounded-full ${
-                  activeTab === "orders" ? "bg-zinc-200 text-black" : "bg-zinc-900 text-zinc-400"
-                }`}
-              >
-                {totalOrders}
-              </span>
-            )}
-          </Link>
-
           {/* Moje Produkty */}
           <Link
             href="/panel-klienta/produkty"
@@ -178,34 +145,13 @@ export function DashboardSidebar({
             )}
           </Link>
 
-          {/* Nowe Zlecenie */}
-          <button
-            onClick={() => {
-              setActiveTab("new_order");
-              setMobileMenuOpen(false);
-            }}
-            title="Nowe Zlecenie"
-            className={`w-full flex items-center ${
-              isCollapsed ? "justify-center px-2 py-3" : "gap-3 px-3 py-2.5"
-            } rounded-xl text-xs font-semibold transition-all cursor-pointer ${
-              activeTab === "new_order"
-                ? "bg-white text-black shadow-sm"
-                : "text-zinc-400 hover:text-white hover:bg-zinc-900/60"
-            }`}
-          >
-            <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-            </svg>
-            {!isCollapsed && <span>Nowe Zlecenie</span>}
-          </button>
-
-          {/* Wsparcie & Discord */}
+          {/* Wsparcie & Pomoc */}
           <button
             onClick={() => {
               setActiveTab("support");
               setMobileMenuOpen(false);
             }}
-            title="Wsparcie & Discord"
+            title="Wsparcie & Pomoc"
             className={`w-full flex items-center ${
               isCollapsed ? "justify-center px-2 py-3" : "gap-3 px-3 py-2.5"
             } rounded-xl text-xs font-semibold transition-all cursor-pointer ${
@@ -217,7 +163,7 @@ export function DashboardSidebar({
             <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
             </svg>
-            {!isCollapsed && <span>Wsparcie & Discord</span>}
+            {!isCollapsed && <span>Wsparcie & Pomoc</span>}
           </button>
         </nav>
 
@@ -234,7 +180,7 @@ export function DashboardSidebar({
               <svg className="w-4 h-4 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
-              <span>Regulamin zleceń</span>
+              <span>Regulamin usług</span>
             </Link>
 
             <Link

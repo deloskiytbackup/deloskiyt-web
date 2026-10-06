@@ -1,157 +1,23 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Product } from "./types";
 
 interface ProductsTabProps {
   products: Product[];
-  setProducts: React.Dispatch<React.SetStateAction<Product[]>>;
 }
 
-export function ProductsTab({ products, setProducts }: ProductsTabProps) {
-  const router = useRouter();
-  const [showAddModal, setShowAddModal] = useState<boolean>(false);
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-
-  // Formularz nowego produktu
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [version, setVersion] = useState("1.0.0");
-  const [category, setCategory] = useState("Szablon / Kod");
-  const [downloadUrl, setDownloadUrl] = useState("");
-
-  const handleCreateProduct = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!name.trim()) return;
-    setIsSubmitting(true);
-    try {
-      const res = await fetch("/api/products", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name,
-          description,
-          version,
-          category,
-          downloadUrl,
-        }),
-      });
-      const data = await res.json();
-      if (res.ok && data.product) {
-        setProducts((prev) => [data.product, ...prev]);
-        setShowAddModal(false);
-        setName("");
-        setDescription("");
-        setDownloadUrl("");
-        router.refresh();
-      } else {
-        alert(data.error || "Wystąpił błąd.");
-      }
-    } catch {
-      alert("Błąd połączenia z serwerem.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
+export function ProductsTab({ products }: ProductsTabProps) {
   return (
     <div className="space-y-8">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-            Moje Produkty
-          </h1>
-          <p className="text-xs text-zinc-400 mt-1">
-            Wszystkie przypisane produkty cyfrowe, szablony, pliki i oprogramowanie.
-          </p>
-        </div>
-
-        <button
-          onClick={() => setShowAddModal(true)}
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white text-black text-xs font-bold hover:bg-zinc-200 transition-colors cursor-pointer w-fit"
-        >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-          </svg>
-          <span>Dodaj / Zarejestruj produkt</span>
-        </button>
+      <div>
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+          Moje Produkty
+        </h1>
+        <p className="text-xs text-zinc-400 mt-1">
+          Dostęp do zakupionych plików, aktualizacji oprogramowania i dokumentacji technicznej.
+        </p>
       </div>
-
-      {/* Modal dodawania produktu */}
-      {showAddModal && (
-        <div className="p-6 rounded-2xl bg-zinc-950 border border-zinc-850 space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-bold text-white">Zarejestruj nowy produkt cyfrowy</h3>
-            <button
-              onClick={() => setShowAddModal(false)}
-              className="text-zinc-500 hover:text-white text-xs cursor-pointer"
-            >
-              ✕ Zamknij
-            </button>
-          </div>
-          <form onSubmit={handleCreateProduct} className="space-y-3">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div>
-                <label className="text-[11px] font-semibold text-zinc-400 block mb-1">Nazwa produktu *</label>
-                <input
-                  required
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="np. Deloskiyt Web Template"
-                  className="w-full px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-500"
-                />
-              </div>
-              <div>
-                <label className="text-[11px] font-semibold text-zinc-400 block mb-1">Kategoria</label>
-                <input
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                  placeholder="np. Website, Plugin, Szablon"
-                  className="w-full px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-500"
-                />
-              </div>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div>
-                <label className="text-[11px] font-semibold text-zinc-400 block mb-1">Wersja</label>
-                <input
-                  value={version}
-                  onChange={(e) => setVersion(e.target.value)}
-                  placeholder="np. 1.0.0"
-                  className="w-full px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-500"
-                />
-              </div>
-              <div>
-                <label className="text-[11px] font-semibold text-zinc-400 block mb-1">Link do pobrania (URL)</label>
-                <input
-                  value={downloadUrl}
-                  onChange={(e) => setDownloadUrl(e.target.value)}
-                  placeholder="https://..."
-                  className="w-full px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-500"
-                />
-              </div>
-            </div>
-            <div>
-              <label className="text-[11px] font-semibold text-zinc-400 block mb-1">Opis produktu</label>
-              <textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                rows={2}
-                placeholder="Krótki opis produktu lub instrukcja instalacji..."
-                className="w-full px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-500"
-              />
-            </div>
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="px-4 py-2.5 rounded-xl bg-white text-black text-xs font-bold hover:bg-zinc-200 transition-colors cursor-pointer disabled:opacity-50"
-            >
-              {isSubmitting ? "Zapisywanie..." : "Dodaj produkt"}
-            </button>
-          </form>
-        </div>
-      )}
 
       {/* Lista produktów */}
       {products.length === 0 ? (
@@ -161,16 +27,10 @@ export function ProductsTab({ products, setProducts }: ProductsTabProps) {
               <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
             </svg>
           </div>
-          <h3 className="text-sm font-bold text-white">Brak przypisanych produktów</h3>
+          <h3 className="text-sm font-bold text-white">Brak aktywnych produktów</h3>
           <p className="text-xs text-zinc-500 max-w-sm mx-auto">
-            Gdy zakupisz gotowy projekt, szablon lub oprogramowanie, pojawi się ono tutaj wraz z plikami do pobrania.
+            Nie masz jeszcze przypisanych żadnych produktów cyfrowych do tego konta. Po zakupie oprogramowania lub szablonu natychmiast uzyskasz do nich dostęp.
           </p>
-          <button
-            onClick={() => setShowAddModal(true)}
-            className="mt-2 inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-850 border border-zinc-800 text-xs font-semibold text-white transition-colors cursor-pointer"
-          >
-            Dodaj produkt demonstracyjny
-          </button>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -193,7 +53,7 @@ export function ProductsTab({ products, setProducts }: ProductsTabProps) {
                 </div>
 
                 {prod.description && (
-                  <p className="text-xs text-zinc-400 leading-relaxed">
+                  <p className="text-xs text-zinc-400 leading-relaxed line-clamp-2">
                     {prod.description}
                   </p>
                 )}
@@ -204,24 +64,31 @@ export function ProductsTab({ products, setProducts }: ProductsTabProps) {
                   Dodano: {new Date(prod.createdAt).toLocaleDateString("pl-PL")}
                 </span>
 
-                {prod.downloadUrl ? (
-                  <a
-                    href={prod.downloadUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white text-black text-xs font-bold hover:bg-zinc-200 transition-colors"
+                <div className="flex items-center gap-2">
+                  <Link
+                    href={`/panel-klienta/produkty/${prod.id}`}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-white text-xs font-semibold transition-colors"
                   >
+                    <span>Szczegóły</span>
                     <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                     </svg>
-                    <span>Pobierz pliki</span>
-                  </a>
-                ) : (
-                  <span className="text-[11px] text-emerald-400 font-semibold flex items-center gap-1">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 inline-block animate-pulse"></span>
-                    Dostęp aktywny
-                  </span>
-                )}
+                  </Link>
+
+                  {prod.downloadUrl && (
+                    <a
+                      href={prod.downloadUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white text-black text-xs font-bold hover:bg-zinc-200 transition-colors"
+                    >
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                      </svg>
+                      <span>Pobierz</span>
+                    </a>
+                  )}
+                </div>
               </div>
             </div>
           ))}

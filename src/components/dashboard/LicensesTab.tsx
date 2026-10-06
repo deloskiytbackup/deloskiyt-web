@@ -1,24 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { License, Product } from "./types";
+import Link from "next/link";
+import { License } from "./types";
 
 interface LicensesTabProps {
   licenses: License[];
-  setLicenses: React.Dispatch<React.SetStateAction<License[]>>;
-  products: Product[];
 }
 
-export function LicensesTab({ licenses, setLicenses, products }: LicensesTabProps) {
-  const router = useRouter();
-  const [showAddModal, setShowAddModal] = useState<boolean>(false);
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+export function LicensesTab({ licenses }: LicensesTabProps) {
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
-
-  // Formularz nowej licencji
-  const [name, setName] = useState("");
-  const [productId, setProductId] = useState("");
 
   const copyToClipboard = (key: string) => {
     navigator.clipboard.writeText(key);
@@ -28,109 +19,16 @@ export function LicensesTab({ licenses, setLicenses, products }: LicensesTabProp
     }, 2000);
   };
 
-  const handleCreateLicense = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!name.trim()) return;
-    setIsSubmitting(true);
-    try {
-      const res = await fetch("/api/licenses", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name,
-          productId: productId || undefined,
-        }),
-      });
-      const data = await res.json();
-      if (res.ok && data.license) {
-        setLicenses((prev) => [data.license, ...prev]);
-        setShowAddModal(false);
-        setName("");
-        setProductId("");
-        router.refresh();
-      } else {
-        alert(data.error || "Wystąpił błąd.");
-      }
-    } catch {
-      alert("Błąd połączenia z serwerem.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
   return (
     <div className="space-y-8">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-            Moje Licencje
-          </h1>
-          <p className="text-xs text-zinc-400 mt-1">
-            Zarządzaj swoimi kluczami licencyjnymi, weryfikacją domen i czasem ważności.
-          </p>
-        </div>
-
-        <button
-          onClick={() => setShowAddModal(true)}
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white text-black text-xs font-bold hover:bg-zinc-200 transition-colors cursor-pointer w-fit"
-        >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-          </svg>
-          <span>Wygeneruj / Aktywuj klucz</span>
-        </button>
+      <div>
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+          Moje Licencje
+        </h1>
+        <p className="text-xs text-zinc-400 mt-1">
+          Zarządzaj swoimi kluczami licencyjnymi, weryfikacją domen i czasem ważności.
+        </p>
       </div>
-
-      {/* Modal dodawania licencji */}
-      {showAddModal && (
-        <div className="p-6 rounded-2xl bg-zinc-950 border border-zinc-850 space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-bold text-white">Wygeneruj nowy klucz licencyjny</h3>
-            <button
-              onClick={() => setShowAddModal(false)}
-              className="text-zinc-500 hover:text-white text-xs cursor-pointer"
-            >
-              ✕ Zamknij
-            </button>
-          </div>
-          <form onSubmit={handleCreateLicense} className="space-y-3">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div>
-                <label className="text-[11px] font-semibold text-zinc-400 block mb-1">Nazwa licencji / Projekt *</label>
-                <input
-                  required
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="np. Licencja Komercyjna - Moja Strona"
-                  className="w-full px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-500"
-                />
-              </div>
-              <div>
-                <label className="text-[11px] font-semibold text-zinc-400 block mb-1">Powiązany produkt (opcjonalnie)</label>
-                <select
-                  value={productId}
-                  onChange={(e) => setProductId(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-xs text-white focus:outline-none focus:border-zinc-500"
-                >
-                  <option value="">-- Wybierz produkt --</option>
-                  {products.map((p) => (
-                    <option key={p.id} value={p.id}>
-                      {p.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="px-4 py-2.5 rounded-xl bg-white text-black text-xs font-bold hover:bg-zinc-200 transition-colors cursor-pointer disabled:opacity-50"
-            >
-              {isSubmitting ? "Generowanie..." : "Generuj klucz licencji"}
-            </button>
-          </form>
-        </div>
-      )}
 
       {/* Lista licencji */}
       {licenses.length === 0 ? (
@@ -142,14 +40,8 @@ export function LicensesTab({ licenses, setLicenses, products }: LicensesTabProp
           </div>
           <h3 className="text-sm font-bold text-white">Brak aktywnych licencji</h3>
           <p className="text-xs text-zinc-500 max-w-sm mx-auto">
-            Każdy zakupiony skrypt lub oprogramowanie deloskiyt posiada unikalny klucz licencyjny chroniący Twoją instalację.
+            Nie masz jeszcze przypisanych żadnych kluczy licencyjnych. Zakupiony kod i usługi deloskiyt będą automatycznie widoczne na Twoim koncie.
           </p>
-          <button
-            onClick={() => setShowAddModal(true)}
-            className="mt-2 inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-zinc-900 hover:bg-zinc-850 border border-zinc-800 text-xs font-semibold text-white transition-colors cursor-pointer"
-          >
-            Wygeneruj klucz testowy
-          </button>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4">
@@ -195,26 +87,38 @@ export function LicensesTab({ licenses, setLicenses, products }: LicensesTabProp
                   </code>
                 </div>
 
-                <button
-                  onClick={() => copyToClipboard(lic.licenseKey)}
-                  className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-xs font-semibold text-zinc-200 transition-colors cursor-pointer shrink-0"
-                >
-                  {copiedKey === lic.licenseKey ? (
-                    <>
-                      <svg className="w-3.5 h-3.5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                      </svg>
-                      <span className="text-emerald-400">Skopiowano</span>
-                    </>
-                  ) : (
-                    <>
-                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                      </svg>
-                      <span>Kopiuj klucz</span>
-                    </>
-                  )}
-                </button>
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    onClick={() => copyToClipboard(lic.licenseKey)}
+                    className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-xs font-semibold text-zinc-200 transition-colors cursor-pointer"
+                  >
+                    {copiedKey === lic.licenseKey ? (
+                      <>
+                        <svg className="w-3.5 h-3.5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span className="text-emerald-400">Skopiowano</span>
+                      </>
+                    ) : (
+                      <>
+                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                        <span>Kopiuj klucz</span>
+                      </>
+                    )}
+                  </button>
+
+                  <Link
+                    href={`/panel-klienta/licencje/${lic.id}`}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white text-black text-xs font-bold hover:bg-zinc-200 transition-colors"
+                  >
+                    <span>Szczegóły</span>
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </Link>
+                </div>
               </div>
 
               <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] text-zinc-500">

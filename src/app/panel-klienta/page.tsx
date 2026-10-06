@@ -4,8 +4,8 @@ import { getSessionUser } from "@/lib/auth";
 import { ClientDashboard } from "@/components/ClientDashboard";
 
 export const metadata: Metadata = {
-  title: "Panel Klienta",
-  description: "Panel Klienta deloskiyt - zlecenia i status projektów.",
+  title: "Panel Klienta | deloskiyt",
+  description: "Panel Klienta deloskiyt - zarządzaj produktami cyfrowymi i licencjami.",
 };
 
 export default async function PanelKlientaPage() {

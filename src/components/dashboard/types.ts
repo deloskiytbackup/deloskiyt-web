@@ -16,6 +16,7 @@ export interface Product {
   category: string;
   downloadUrl: string | null;
   createdAt: Date | string;
+  licenses?: License[];
 }
 
 export interface License {
@@ -34,9 +35,9 @@ export interface User {
   email: string;
   name: string | null;
   role: string;
-  orders: Order[];
+  orders?: Order[];
   products?: Product[];
   licenses?: License[];
 }
 
-export type DashboardTab = "orders" | "products" | "licenses" | "new_order" | "support";
+export type DashboardTab = "products" | "licenses" | "support";
