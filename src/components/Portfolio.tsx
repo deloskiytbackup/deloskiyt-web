@@ -12,10 +12,10 @@ export function Portfolio() {
       className="min-h-dvh flex flex-col justify-center px-4 sm:px-6 py-16 sm:py-24 max-w-5xl mx-auto w-full"
     >
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
+        viewport={{ once: true, margin: "-60px" }}
+        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
         className="flex flex-col gap-2.5 mb-8 sm:mb-12 text-center sm:text-left"
       >
         <p className="text-[11px] sm:text-xs uppercase tracking-widest text-zinc-500 font-semibold">
@@ -34,10 +34,14 @@ export function Portfolio() {
         {projects.map((project, index) => (
           <motion.div
             key={project.title}
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: index * 0.1 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{
+              duration: 0.6,
+              delay: index * 0.12,
+              ease: [0.16, 1, 0.3, 1],
+            }}
           >
             <ProjectCard project={project} />
           </motion.div>
