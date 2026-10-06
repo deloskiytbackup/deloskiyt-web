@@ -35,6 +35,8 @@ export default async function ZarzadzajSklepemPage() {
       features: true,
       isPublic: true,
       downloadUrl: true,
+      videoUrl: true,
+      imageUrl: true,
       createdAt: true,
     },
   });

@@ -23,6 +23,8 @@ export default async function SklepPage() {
       price: true,
       badge: true,
       features: true,
+      videoUrl: true,
+      imageUrl: true,
       downloadUrl: true,
       createdAt: true,
     },

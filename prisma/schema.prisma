@@ -43,6 +43,8 @@ model Product {
   isPublic    Boolean   @default(true)
   features    String?
   badge       String?
+  videoUrl    String?
+  imageUrl    String?
   downloadUrl String?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt

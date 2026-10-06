@@ -15,7 +15,7 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json();
-    const { name, description, version, category, price, features, badge, downloadUrl, isPublic } = body;
+    const { name, description, version, category, price, features, badge, downloadUrl, videoUrl, imageUrl, isPublic } = body;
 
     if (!name || typeof name !== "string" || !name.trim()) {
       return NextResponse.json({ error: "Nazwa produktu jest wymagana." }, { status: 400 });
@@ -29,6 +29,8 @@ export async function POST(request: Request) {
         category: category ? String(category).trim() : "Bot Discord",
         price: price ? parseFloat(String(price)) : null,
         badge: badge ? String(badge).trim() : null,
+        videoUrl: videoUrl ? String(videoUrl).trim() : null,
+        imageUrl: imageUrl ? String(imageUrl).trim() : null,
         features: features ? String(features).trim() : null,
         downloadUrl: downloadUrl ? String(downloadUrl).trim() : null,
         isPublic: isPublic !== undefined ? Boolean(isPublic) : true,
@@ -52,7 +54,7 @@ export async function PATCH(request: Request) {
 
   try {
     const body = await request.json();
-    const { id, isPublic, price, badge } = body;
+    const { id, isPublic, price, badge, videoUrl, imageUrl } = body;
 
     if (!id) {
       return NextResponse.json({ error: "Wymagane ID produktu." }, { status: 400 });
@@ -64,6 +66,8 @@ export async function PATCH(request: Request) {
         ...(isPublic !== undefined ? { isPublic: Boolean(isPublic) } : {}),
         ...(price !== undefined ? { price: price ? parseFloat(String(price)) : null } : {}),
         ...(badge !== undefined ? { badge: badge ? String(badge).trim() : null } : {}),
+        ...(videoUrl !== undefined ? { videoUrl: videoUrl ? String(videoUrl).trim() : null } : {}),
+        ...(imageUrl !== undefined ? { imageUrl: imageUrl ? String(imageUrl).trim() : null } : {}),
       },
     });
 
