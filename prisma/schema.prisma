@@ -103,3 +103,20 @@ model DiscordModLog {
   details     String?
   createdAt   DateTime @default(now())
 }
+
+model SupportInquiry {
+  id          String   @id @default(cuid())
+  ticketCode  String   @unique
+  name        String
+  email       String
+  discordTag  String?
+  type        String   // "pomoc" | "skarga" | "zapytanie" | "licencja" | "inne"
+  orderNumber String?
+  subject     String
+  message     String
+  status      String   @default("nowe") // "nowe" | "w_trakcie" | "rozwiazane" | "odrzucone"
+  reply       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+

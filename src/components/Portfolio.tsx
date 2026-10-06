@@ -50,12 +50,26 @@ export function Portfolio() {
 
       {/* Powrót na górę & stopka z linkami */}
       <div className="mt-14 sm:mt-20 pt-8 border-t border-zinc-900 flex flex-col sm:flex-row items-center justify-between gap-5 text-xs text-zinc-500 pb-10">
-        <div className="flex items-center gap-6">
+        <div className="flex flex-wrap items-center gap-4 sm:gap-6">
           <Link
             href="/sklep"
             className="hover:text-white transition-colors underline-offset-4 hover:underline"
           >
             Sklep
+          </Link>
+          <span className="text-zinc-800">•</span>
+          <Link
+            href="/pomoc"
+            className="hover:text-white transition-colors underline-offset-4 hover:underline"
+          >
+            Pomoc
+          </Link>
+          <span className="text-zinc-800">•</span>
+          <Link
+            href="/polityka-platnosci"
+            className="hover:text-white transition-colors underline-offset-4 hover:underline"
+          >
+            Płatności
           </Link>
           <span className="text-zinc-800">•</span>
           <Link
