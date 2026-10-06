@@ -67,43 +67,27 @@ export function SocialLinks() {
       animate="visible"
       className="flex items-center gap-3 sm:gap-4"
     >
-      {socialLinks.map((link) => {
-        const glowBg =
-          link.id === "youtube"
-            ? "bg-red-500/25 group-hover:bg-red-500/40"
-            : link.id === "spotify"
-            ? "bg-emerald-500/25 group-hover:bg-emerald-500/40"
-            : link.id === "discord"
-            ? "bg-indigo-500/25 group-hover:bg-indigo-500/40"
-            : "bg-white/20 group-hover:bg-white/35";
-
-        return (
-          <motion.a
-            key={link.id}
-            href={link.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={link.name}
-            variants={itemVariants}
-            whileHover={{
-              scale: 1.14,
-              y: -5,
-              transition: { type: "spring", stiffness: 400, damping: 15 },
-            }}
-            whileTap={{ scale: 0.92 }}
-            className="group relative p-3.5 sm:p-4 rounded-2xl bg-zinc-950/80 border border-zinc-800/80 hover:border-zinc-700/90 text-zinc-300 hover:text-white transition-all backdrop-blur-md shadow-lg touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 cursor-pointer"
-          >
-            {/* Ambient hover glow effect */}
-            <div
-              className={`absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-xl -z-10 ${glowBg}`}
-            />
-
-            <span className={`block transition-colors duration-200 ${link.hoverColor}`}>
-              <SocialIcon id={link.id} />
-            </span>
-          </motion.a>
-        );
-      })}
+      {socialLinks.map((link) => (
+        <motion.a
+          key={link.id}
+          href={link.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={link.name}
+          variants={itemVariants}
+          whileHover={{
+            scale: 1.14,
+            y: -5,
+            transition: { type: "spring", stiffness: 400, damping: 15 },
+          }}
+          whileTap={{ scale: 0.92 }}
+          className="group relative p-3.5 sm:p-4 rounded-2xl bg-zinc-950/80 border border-zinc-800/80 hover:border-zinc-700 text-zinc-300 hover:text-white transition-all backdrop-blur-md shadow-lg touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 cursor-pointer"
+        >
+          <span className={`block transition-colors duration-200 ${link.hoverColor}`}>
+            <SocialIcon id={link.id} />
+          </span>
+        </motion.a>
+      ))}
     </motion.div>
   );
 }
