@@ -62,6 +62,7 @@ model License {
   serverIp        String?
   serverPort      Int?
   hwid            String?
+  discordUserId   String?
   lastConnectedAt DateTime?
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
@@ -76,4 +77,29 @@ model SiteSetting {
   value       String
   description String?
   updatedAt   DateTime @updatedAt
+}
+
+model DiscordTicket {
+  id          String    @id @default(cuid())
+  channelId   String    @unique
+  guildId     String
+  creatorId   String
+  creatorTag  String?
+  type        String    // "order" | "support" | "custom"
+  status      String    @default("open") // "open" | "closed"
+  createdAt   DateTime  @default(now())
+  closedAt    DateTime?
+  closedById  String?
+  transcript  String?
+}
+
+model DiscordModLog {
+  id          String   @id @default(cuid())
+  guildId     String
+  action      String   // "BAN" | "KICK" | "TIMEOUT" | "WARN" | "CLEAR"
+  moderatorId String
+  targetId    String?
+  reason      String?
+  details     String?
+  createdAt   DateTime @default(now())
 }
