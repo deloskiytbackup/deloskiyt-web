@@ -48,6 +48,14 @@ export function Portfolio() {
       <div className="mt-14 sm:mt-20 pt-8 border-t border-zinc-900 flex flex-col sm:flex-row items-center justify-between gap-5 text-xs text-zinc-500 pb-10">
         <div className="flex items-center gap-6">
           <Link
+            href="/sklep"
+            className="hover:text-emerald-400 text-zinc-300 font-semibold transition-colors underline-offset-4 hover:underline flex items-center gap-1.5"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+            <span>Sklep</span>
+          </Link>
+          <span className="text-zinc-800">•</span>
+          <Link
             href="/regulamin"
             className="hover:text-white transition-colors underline-offset-4 hover:underline"
           >

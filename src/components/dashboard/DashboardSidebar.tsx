@@ -35,6 +35,9 @@ export function DashboardSidebar({
     pathname === "/panel-klienta/licencje" ||
     pathname.startsWith("/panel-klienta/licencje/");
 
+  const isStoreActive = pathname.startsWith("/panel-klienta/zarzadzaj-sklepem");
+  const isAdmin = user.role === "admin" || user.email === "deloskiyt@gmail.com";
+
   return (
     <aside
       className={`${
@@ -146,6 +149,27 @@ export function DashboardSidebar({
               </span>
             )}
           </Link>
+
+          {/* Zarządzaj Sklepem (Tylko dla Admina) */}
+          {isAdmin && (
+            <Link
+              href="/panel-klienta/zarzadzaj-sklepem"
+              onClick={() => setMobileMenuOpen(false)}
+              title="Zarządzaj Sklepem"
+              className={`w-full flex items-center ${
+                isCollapsed ? "justify-center px-2 py-3" : "gap-3 px-3 py-2.5"
+              } rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                isStoreActive
+                  ? "bg-amber-400 text-black shadow-sm font-bold"
+                  : "text-amber-400/90 hover:text-amber-300 hover:bg-amber-400/10 border border-amber-400/20"
+              }`}
+            >
+              <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-8-6h16" />
+              </svg>
+              {!isCollapsed && <span>Wystaw w Sklepie</span>}
+            </Link>
+          )}
         </nav>
 
         {/* Linki Zewnętrzne */}
@@ -154,6 +178,16 @@ export function DashboardSidebar({
             <span className="px-3 text-[10px] uppercase tracking-wider text-zinc-600 font-bold block mb-1">
               Przydatne linki
             </span>
+            <Link
+              href="/sklep"
+              className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs text-zinc-400 hover:text-white hover:bg-zinc-900/40 transition-colors"
+            >
+              <svg className="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+              </svg>
+              <span>Publiczny Sklep</span>
+            </Link>
+
             <Link
               href="/regulamin"
               className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs text-zinc-400 hover:text-white hover:bg-zinc-900/40 transition-colors"

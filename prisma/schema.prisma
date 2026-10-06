@@ -39,6 +39,10 @@ model Product {
   description String?
   version     String    @default("1.0.0")
   category    String    @default("Digital")
+  price       Float?
+  isPublic    Boolean   @default(true)
+  features    String?
+  badge       String?
   downloadUrl String?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
