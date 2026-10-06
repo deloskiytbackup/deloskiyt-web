@@ -41,8 +41,6 @@ export function ClientDashboard({ user, initialTab = "products" }: ClientDashboa
       {/* Zwijany sidebar na desktopie i pełny na mobile */}
       <DashboardSidebar
         user={user}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
         mobileMenuOpen={mobileMenuOpen}
         setMobileMenuOpen={setMobileMenuOpen}
         isCollapsed={isCollapsed}

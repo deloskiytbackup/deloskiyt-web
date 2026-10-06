@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { getSessionUser } from "@/lib/auth";
-import { ClientDashboard } from "@/components/ClientDashboard";
+import { ProductsTab } from "@/components/dashboard/ProductsTab";
 
 export const metadata: Metadata = {
   title: "Moje Produkty - Panel Klienta | deloskiyt",
@@ -15,5 +15,5 @@ export default async function ProduktyPage() {
     redirect("/login");
   }
 
-  return <ClientDashboard user={user} initialTab="products" />;
+  return <ProductsTab products={user.products || []} />;
 }

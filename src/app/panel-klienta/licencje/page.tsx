@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { getSessionUser } from "@/lib/auth";
-import { ClientDashboard } from "@/components/ClientDashboard";
+import { LicensesTab } from "@/components/dashboard/LicensesTab";
 
 export const metadata: Metadata = {
   title: "Moje Licencje - Panel Klienta | deloskiyt",
@@ -15,5 +15,5 @@ export default async function LicencjePage() {
     redirect("/login");
   }
 
-  return <ClientDashboard user={user} initialTab="licenses" />;
+  return <LicensesTab licenses={user.licenses || []} />;
 }

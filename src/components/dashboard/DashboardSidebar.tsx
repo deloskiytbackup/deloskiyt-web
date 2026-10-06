@@ -1,13 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { logoutAction } from "@/actions/authActions";
-import { User, DashboardTab } from "./types";
+import { User } from "./types";
 
 interface DashboardSidebarProps {
   user: User;
-  activeTab: DashboardTab;
-  setActiveTab: (tab: DashboardTab) => void;
   mobileMenuOpen: boolean;
   setMobileMenuOpen: (open: boolean) => void;
   isCollapsed: boolean;
@@ -18,8 +17,6 @@ interface DashboardSidebarProps {
 
 export function DashboardSidebar({
   user,
-  activeTab,
-  setActiveTab,
   mobileMenuOpen,
   setMobileMenuOpen,
   isCollapsed,
@@ -27,6 +24,17 @@ export function DashboardSidebar({
   productsCount,
   licensesCount,
 }: DashboardSidebarProps) {
+  const pathname = usePathname();
+
+  const isProductsActive =
+    pathname === "/panel-klienta" ||
+    pathname === "/panel-klienta/produkty" ||
+    pathname.startsWith("/panel-klienta/produkty/");
+
+  const isLicensesActive =
+    pathname === "/panel-klienta/licencje" ||
+    pathname.startsWith("/panel-klienta/licencje/");
+
   return (
     <aside
       className={`${
@@ -39,7 +47,7 @@ export function DashboardSidebar({
         {/* Logo, Tytuł & Przycisk Zwijania */}
         <div className="hidden md:flex items-center justify-between px-2 py-1">
           {!isCollapsed && (
-            <Link href="/panel-klienta" className="flex items-center gap-3 overflow-hidden">
+            <Link href="/panel-klienta/produkty" className="flex items-center gap-3 overflow-hidden">
               <div className="w-9 h-9 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center font-bold text-base shadow-sm shrink-0">
                 D
               </div>
@@ -53,7 +61,7 @@ export function DashboardSidebar({
           )}
 
           {isCollapsed && (
-            <Link href="/panel-klienta" className="mx-auto block" title="deloskiyt Panel">
+            <Link href="/panel-klienta/produkty" className="mx-auto block" title="deloskiyt Panel">
               <div className="w-9 h-9 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center font-bold text-base shadow-sm">
                 D
               </div>
@@ -86,15 +94,12 @@ export function DashboardSidebar({
           {/* Moje Produkty */}
           <Link
             href="/panel-klienta/produkty"
-            onClick={() => {
-              setActiveTab("products");
-              setMobileMenuOpen(false);
-            }}
+            onClick={() => setMobileMenuOpen(false)}
             title="Moje Produkty"
             className={`w-full flex items-center ${
               isCollapsed ? "justify-center px-2 py-3" : "gap-3 px-3 py-2.5"
             } rounded-xl text-xs font-semibold transition-all cursor-pointer ${
-              activeTab === "products"
+              isProductsActive
                 ? "bg-white text-black shadow-sm"
                 : "text-zinc-400 hover:text-white hover:bg-zinc-900/60"
             }`}
@@ -106,7 +111,7 @@ export function DashboardSidebar({
             {!isCollapsed && productsCount > 0 && (
               <span
                 className={`ml-auto text-[10px] px-1.5 py-0.5 rounded-full ${
-                  activeTab === "products" ? "bg-zinc-200 text-black" : "bg-zinc-900 text-zinc-400"
+                  isProductsActive ? "bg-zinc-200 text-black" : "bg-zinc-900 text-zinc-400"
                 }`}
               >
                 {productsCount}
@@ -117,15 +122,12 @@ export function DashboardSidebar({
           {/* Moje Licencje */}
           <Link
             href="/panel-klienta/licencje"
-            onClick={() => {
-              setActiveTab("licenses");
-              setMobileMenuOpen(false);
-            }}
+            onClick={() => setMobileMenuOpen(false)}
             title="Moje Licencje"
             className={`w-full flex items-center ${
               isCollapsed ? "justify-center px-2 py-3" : "gap-3 px-3 py-2.5"
             } rounded-xl text-xs font-semibold transition-all cursor-pointer ${
-              activeTab === "licenses"
+              isLicensesActive
                 ? "bg-white text-black shadow-sm"
                 : "text-zinc-400 hover:text-white hover:bg-zinc-900/60"
             }`}
@@ -137,34 +139,13 @@ export function DashboardSidebar({
             {!isCollapsed && licensesCount > 0 && (
               <span
                 className={`ml-auto text-[10px] px-1.5 py-0.5 rounded-full ${
-                  activeTab === "licenses" ? "bg-zinc-200 text-black" : "bg-zinc-900 text-zinc-400"
+                  isLicensesActive ? "bg-zinc-200 text-black" : "bg-zinc-900 text-zinc-400"
                 }`}
               >
                 {licensesCount}
               </span>
             )}
           </Link>
-
-          {/* Wsparcie & Pomoc */}
-          <button
-            onClick={() => {
-              setActiveTab("support");
-              setMobileMenuOpen(false);
-            }}
-            title="Wsparcie & Pomoc"
-            className={`w-full flex items-center ${
-              isCollapsed ? "justify-center px-2 py-3" : "gap-3 px-3 py-2.5"
-            } rounded-xl text-xs font-semibold transition-all cursor-pointer ${
-              activeTab === "support"
-                ? "bg-white text-black shadow-sm"
-                : "text-zinc-400 hover:text-white hover:bg-zinc-900/60"
-            }`}
-          >
-            <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-            </svg>
-            {!isCollapsed && <span>Wsparcie & Pomoc</span>}
-          </button>
         </nav>
 
         {/* Linki Zewnętrzne */}

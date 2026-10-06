@@ -20,7 +20,7 @@ export function ProductDetailView({ product }: ProductDetailViewProps) {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white p-5 md:p-12 max-w-5xl mx-auto space-y-8 selection:bg-white/20">
+    <div className="space-y-8 max-w-5xl">
       {/* Nawigacja powrotu */}
       <div className="flex items-center justify-between gap-4">
         <Link
