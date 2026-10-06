@@ -69,6 +69,13 @@ export async function getSessionUser() {
         orders: {
           orderBy: { createdAt: "desc" },
         },
+        products: {
+          orderBy: { createdAt: "desc" },
+        },
+        licenses: {
+          include: { product: true },
+          orderBy: { createdAt: "desc" },
+        },
       },
     });
     return user;
