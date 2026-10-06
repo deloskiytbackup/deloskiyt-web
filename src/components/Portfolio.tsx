@@ -55,6 +55,15 @@ export function Portfolio() {
             <span>Sklep</span>
           </Link>
           <span className="text-zinc-800">•</span>
+          <a
+            href="https://github.com/deloskiytbackup"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-white transition-colors underline-offset-4 hover:underline"
+          >
+            GitHub
+          </a>
+          <span className="text-zinc-800">•</span>
           <Link
             href="/regulamin"
             className="hover:text-white transition-colors underline-offset-4 hover:underline"

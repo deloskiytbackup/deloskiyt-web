@@ -26,4 +26,10 @@ export const socialLinks: SocialLink[] = [
     url: `https://discord.com/users/${DISCORD_USER_ID}`,
     hoverColor: "hover:text-[#5865F2]",
   },
+  {
+    id: "github",
+    name: "GitHub",
+    url: "https://github.com/deloskiytbackup",
+    hoverColor: "hover:text-white",
+  },
 ];
