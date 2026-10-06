@@ -5,6 +5,7 @@ import {
   setMaintenanceMode,
   setStoreEnabled,
   setClientPortalEnabled,
+  setPortfolioEnabled,
 } from "@/lib/settings";
 
 export async function GET() {
@@ -43,6 +44,9 @@ export async function POST(request: Request) {
     } else if (key === "client_portal_enabled") {
       success = await setClientPortalEnabled(enabled);
       message = enabled ? "Panel Klienta został WŁĄCZONY." : "Panel Klienta został WYŁĄCZONY.";
+    } else if (key === "portfolio_enabled") {
+      success = await setPortfolioEnabled(enabled);
+      message = enabled ? "Portfolio zostało WŁĄCZONE." : "Portfolio zostało WYŁĄCZONE.";
     } else if (key === "maintenance_mode") {
       success = await setMaintenanceMode(enabled);
       message = enabled

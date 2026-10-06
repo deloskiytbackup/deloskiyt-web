@@ -39,7 +39,6 @@ export async function getStoreEnabled(): Promise<boolean> {
     const setting = await prisma.siteSetting.findUnique({
       where: { key: "store_enabled" },
     });
-    // Domyślnie włączony, chyba że w bazie zapisano "false"
     return setting ? setting.value === "true" : true;
   } catch (error) {
     console.error("Error reading store_enabled setting:", error);
@@ -74,7 +73,6 @@ export async function getClientPortalEnabled(): Promise<boolean> {
     const setting = await prisma.siteSetting.findUnique({
       where: { key: "client_portal_enabled" },
     });
-    // Domyślnie włączony, chyba że w bazie zapisano "false"
     return setting ? setting.value === "true" : true;
   } catch (error) {
     console.error("Error reading client_portal_enabled setting:", error);
@@ -104,16 +102,53 @@ export async function setClientPortalEnabled(enabled: boolean): Promise<boolean>
   }
 }
 
+export async function getPortfolioEnabled(): Promise<boolean> {
+  try {
+    const setting = await prisma.siteSetting.findUnique({
+      where: { key: "portfolio_enabled" },
+    });
+    // Domyślnie włączone, chyba że w bazie zapisano "false"
+    return setting ? setting.value === "true" : true;
+  } catch (error) {
+    console.error("Error reading portfolio_enabled setting:", error);
+    return true;
+  }
+}
+
+export async function setPortfolioEnabled(enabled: boolean): Promise<boolean> {
+  try {
+    await prisma.siteSetting.upsert({
+      where: { key: "portfolio_enabled" },
+      update: {
+        value: enabled ? "true" : "false",
+        updatedAt: new Date(),
+      },
+      create: {
+        key: "portfolio_enabled",
+        value: enabled ? "true" : "false",
+        description: "Dostępność sekcji i podstron Portfolio",
+        updatedAt: new Date(),
+      },
+    });
+    return true;
+  } catch (error) {
+    console.error("Error updating portfolio_enabled setting:", error);
+    return false;
+  }
+}
+
 export async function getAllSiteSettings() {
-  const [maintenance, storeEnabled, clientPortalEnabled] = await Promise.all([
+  const [maintenance, storeEnabled, clientPortalEnabled, portfolioEnabled] = await Promise.all([
     getMaintenanceMode(),
     getStoreEnabled(),
     getClientPortalEnabled(),
+    getPortfolioEnabled(),
   ]);
 
   return {
     maintenance,
     storeEnabled,
     clientPortalEnabled,
+    portfolioEnabled,
   };
 }

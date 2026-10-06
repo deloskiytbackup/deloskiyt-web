@@ -1,19 +1,15 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { projects, getProjectById } from "@/data/projects";
+import { getPortfolioEnabled } from "@/lib/settings";
+import { getSessionUser } from "@/lib/auth";
 
 interface PageProps {
   params: Promise<{ id: string }>;
 }
 
-export const dynamic = "force-static";
-
-export async function generateStaticParams() {
-  return projects.map((p) => ({
-    id: p.id,
-  }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { id } = await params;
@@ -32,6 +28,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function ProjectDetailPage({ params }: PageProps) {
+  const isPortfolioEnabled = await getPortfolioEnabled();
+  const user = await getSessionUser();
+  const isAdmin = user && (user.role === "admin" || user.email === "deloskiyt@gmail.com");
+
+  if (!isPortfolioEnabled && !isAdmin) {
+    redirect("/");
+  }
+
   const { id } = await params;
   const project = getProjectById(id);
 
@@ -44,6 +48,11 @@ export default async function ProjectDetailPage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen bg-black text-white selection:bg-white/20 pb-20">
+      {!isPortfolioEnabled && isAdmin && (
+        <div className="bg-amber-500/15 border-b border-amber-500/30 text-amber-300 text-xs py-2 px-4 text-center font-medium sticky top-0 z-50 backdrop-blur-md">
+          ⚠️ <strong>Tryb administratora:</strong> Portfolio jest obecnie WYŁĄCZONE dla odwiedzających.
+        </div>
+      )}
       {/* Pasek nawigacyjny */}
       <header className="sticky top-0 z-30 bg-black/80 backdrop-blur-md border-b border-zinc-900">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">

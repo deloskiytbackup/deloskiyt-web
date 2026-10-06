@@ -34,10 +34,12 @@ export function StoreManagerView({ products: initialProducts }: StoreManagerView
   const [settings, setSettings] = useState<{
     storeEnabled: boolean;
     clientPortalEnabled: boolean;
+    portfolioEnabled: boolean;
     maintenance: boolean;
   }>({
     storeEnabled: true,
     clientPortalEnabled: true,
+    portfolioEnabled: true,
     maintenance: false,
   });
   const [loadingSettings, setLoadingSettings] = useState(true);
@@ -56,7 +58,7 @@ export function StoreManagerView({ products: initialProducts }: StoreManagerView
   }, []);
 
   const handleToggleSetting = async (
-    key: "store_enabled" | "client_portal_enabled" | "maintenance_mode",
+    key: "store_enabled" | "client_portal_enabled" | "portfolio_enabled" | "maintenance_mode",
     currentVal: boolean
   ) => {
     setSavingKey(key);
@@ -230,7 +232,7 @@ export function StoreManagerView({ products: initialProducts }: StoreManagerView
           )}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Przełącznik Sklepu */}
           <div className="p-4 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 flex flex-col justify-between gap-4">
             <div>
@@ -249,7 +251,7 @@ export function StoreManagerView({ products: initialProducts }: StoreManagerView
                 </span>
               </div>
               <p className="text-xs text-zinc-400 mt-1.5 leading-relaxed">
-                Gdy wyłączony, strona <code className="text-zinc-300">/sklep</code> wyświetla komunikat o przerwie, a koszyk i zakupy są zablokowane.
+                Gdy wyłączony, strona <code className="text-zinc-300">/sklep</code> wyświetla komunikat o przerwie, a zakupy są wstrzymane.
               </p>
             </div>
             <button
@@ -287,7 +289,7 @@ export function StoreManagerView({ products: initialProducts }: StoreManagerView
                 </span>
               </div>
               <p className="text-xs text-zinc-400 mt-1.5 leading-relaxed">
-                Gdy wyłączony, zwykli klienci widzą ekran konserwacyjny (administratorzy nadal zachowują pełny dostęp).
+                Gdy wyłączony, zwykli klienci widzą ekran konserwacyjny (admin ma stały dostęp).
               </p>
             </div>
             <button
@@ -304,6 +306,44 @@ export function StoreManagerView({ products: initialProducts }: StoreManagerView
                 : settings.clientPortalEnabled
                 ? "Wyłącz Panel Klienta"
                 : "Włącz Panel Klienta"}
+            </button>
+          </div>
+
+          {/* Przełącznik Portfolio */}
+          <div className="p-4 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 flex flex-col justify-between gap-4">
+            <div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-white uppercase tracking-wider">
+                  Portfolio
+                </span>
+                <span
+                  className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase ${
+                    settings.portfolioEnabled
+                      ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                      : "bg-red-500/10 text-red-400 border border-red-500/20"
+                  }`}
+                >
+                  {settings.portfolioEnabled ? "Włączone" : "Wyłączone"}
+                </span>
+              </div>
+              <p className="text-xs text-zinc-400 mt-1.5 leading-relaxed">
+                Gdy wyłączone, sekcja portfolio na stronie głównej oraz podstrony projektów są ukryte.
+              </p>
+            </div>
+            <button
+              onClick={() => handleToggleSetting("portfolio_enabled", settings.portfolioEnabled)}
+              disabled={savingKey === "portfolio_enabled"}
+              className={`w-full py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                settings.portfolioEnabled
+                  ? "bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 active:scale-95"
+                  : "bg-emerald-500 hover:bg-emerald-400 text-black shadow-lg shadow-emerald-500/20 active:scale-95"
+              }`}
+            >
+              {savingKey === "portfolio_enabled"
+                ? "Zapisywanie..."
+                : settings.portfolioEnabled
+                ? "Wyłącz Portfolio"
+                : "Włącz Portfolio"}
             </button>
           </div>
 
@@ -325,7 +365,7 @@ export function StoreManagerView({ products: initialProducts }: StoreManagerView
                 </span>
               </div>
               <p className="text-xs text-zinc-400 mt-1.5 leading-relaxed">
-                Włącza pełnoekranowy tryb „Zmieniamy się na lepsze” dla wszystkich odwiedzających stronę główną.
+                Włącza pełnoekranowy tryb „Zmieniamy się na lepsze” dla odwiedzających.
               </p>
             </div>
             <button
