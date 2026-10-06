@@ -25,6 +25,10 @@ export interface License {
   name: string;
   status: string;
   expiresAt: Date | string | null;
+  serverIp?: string | null;
+  serverPort?: number | null;
+  hwid?: string | null;
+  lastConnectedAt?: Date | string | null;
   createdAt: Date | string;
   productId: string | null;
   product?: Product | null;
