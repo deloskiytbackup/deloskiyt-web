@@ -22,7 +22,11 @@ interface StoreViewProps {
   products: StoreProduct[];
 }
 
+import { useCart } from "@/context/CartContext";
+import { CartButton } from "./CartButton";
+
 export function StoreView({ products }: StoreViewProps) {
+  const { addToCart, isInCart } = useCart();
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
 
@@ -58,13 +62,14 @@ export function StoreView({ products }: StoreViewProps) {
             </span>
           </Link>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <Link
               href="/"
               className="text-xs text-zinc-400 hover:text-white transition-colors hidden sm:block"
             >
               Strona główna
             </Link>
+            <CartButton />
             <Link
               href="/panel-klienta"
               className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white text-black text-xs font-bold hover:bg-zinc-200 transition-colors"
@@ -276,25 +281,50 @@ export function StoreView({ products }: StoreViewProps) {
                       </span>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-2 pt-1">
-                      <Link
-                        href={`/sklep/${prod.id}`}
-                        className="py-2.5 px-3 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-xs font-semibold text-white transition-colors text-center flex items-center justify-center gap-1.5"
+                    <div className="space-y-2 pt-1">
+                      <button
+                        onClick={() =>
+                          addToCart({
+                            id: prod.id,
+                            name: prod.name,
+                            price: prod.price || 0,
+                            version: prod.version,
+                            badge: prod.badge,
+                            imageUrl: prod.imageUrl,
+                          })
+                        }
+                        className={`w-full py-2.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm ${
+                          isInCart(prod.id)
+                            ? "bg-emerald-500/20 border border-emerald-500/40 text-emerald-400"
+                            : "bg-white hover:bg-zinc-200 text-black"
+                        }`}
                       >
-                        <span>Szczegóły</span>
-                        <svg className="w-3.5 h-3.5 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                        <svg className="w-4 h-4 fill-none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                         </svg>
-                      </Link>
+                        <span>{isInCart(prod.id) ? "W koszyku ✓" : "Dodaj do koszyka (Stripe)"}</span>
+                      </button>
 
-                      <a
-                        href="https://discord.gg"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="py-2.5 px-3 rounded-xl bg-white hover:bg-zinc-200 text-black text-xs font-bold transition-all text-center flex items-center justify-center gap-1.5 shadow-sm"
-                      >
-                        <span>Kup (Discord)</span>
-                      </a>
+                      <div className="grid grid-cols-2 gap-2">
+                        <Link
+                          href={`/sklep/${prod.id}`}
+                          className="py-2 px-3 rounded-xl bg-zinc-900 hover:bg-zinc-850 border border-zinc-800 text-xs font-semibold text-white transition-colors text-center flex items-center justify-center gap-1.5"
+                        >
+                          <span>Szczegóły</span>
+                          <svg className="w-3.5 h-3.5 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                          </svg>
+                        </Link>
+
+                        <a
+                          href="https://discord.gg"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="py-2 px-3 rounded-xl bg-zinc-900 hover:bg-zinc-850 border border-zinc-800 text-xs font-semibold text-zinc-300 hover:text-white transition-all text-center flex items-center justify-center gap-1.5"
+                        >
+                          <span>Discord</span>
+                        </a>
+                      </div>
                     </div>
                   </div>
                 </div>
