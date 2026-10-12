@@ -10,6 +10,8 @@ export interface ManagedProduct {
   description: string | null;
   version: string;
   category: string;
+  itemType?: string | null;
+  accountCredentials?: string | null;
   price: number | null;
   badge: string | null;
   features: string | null;
@@ -86,10 +88,12 @@ export function StoreManagerView({ products: initialProducts }: StoreManagerView
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [version, setVersion] = useState("1.0.0");
-  const [category, setCategory] = useState("Bot Discord");
+  const [itemType, setItemType] = useState<"konto" | "przedmiot">("konto");
+  const [category, setCategory] = useState("Konta do gry");
+  const [accountCredentials, setAccountCredentials] = useState("");
   const [price, setPrice] = useState("49.99");
   const [badge, setBadge] = useState("NOWOŚĆ");
-  const [features, setFeatures] = useState("System ticketów;Baza MySQL;Auto-aktualizacje;Ochrona licencyjna");
+  const [features, setFeatures] = useState("Pełny dostęp do konta;Weryfikacja e-mail;Brak blokad;Gwarancja 30 dni");
   const [downloadUrl, setDownloadUrl] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
   const [imageUrl, setImageUrl] = useState("");
@@ -108,6 +112,8 @@ export function StoreManagerView({ products: initialProducts }: StoreManagerView
           description,
           version,
           category,
+          itemType,
+          accountCredentials: itemType === "konto" ? accountCredentials.trim() : null,
           price: parseFloat(price) || null,
           badge,
           features,
@@ -127,6 +133,8 @@ export function StoreManagerView({ products: initialProducts }: StoreManagerView
         setDownloadUrl("");
         setVideoUrl("");
         setImageUrl("");
+        setAccountCredentials("");
+        setItemType("konto");
         router.refresh();
       } else {
         alert(data.error || "Wystąpił błąd podczas wystawiania produktu.");
@@ -397,14 +405,86 @@ export function StoreManagerView({ products: initialProducts }: StoreManagerView
             </span>
           </div>
 
+          {/* Wybór typu zamówienia: Konto do gry vs Przedmiot do gry */}
+          <div>
+            <label className="text-xs font-semibold text-zinc-300 block mb-2">
+              Typ zamówienia / oferty *
+            </label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setItemType("konto");
+                  if (category === "Przedmioty w grze") setCategory("Konta do gry");
+                }}
+                className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer flex items-start gap-3 ${
+                  itemType === "konto"
+                    ? "bg-indigo-500/15 border-indigo-500/40 text-white shadow-lg shadow-indigo-500/10"
+                    : "bg-zinc-900/60 border-zinc-800 text-zinc-400 hover:border-zinc-700 hover:text-zinc-200"
+                }`}
+              >
+                <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 font-bold text-base ${
+                  itemType === "konto" ? "bg-indigo-500 text-white" : "bg-zinc-800 text-zinc-400"
+                }`}>
+                  🎮
+                </div>
+                <div>
+                  <div className="text-xs font-bold text-white flex items-center gap-1.5">
+                    <span>Konto do gry</span>
+                    {itemType === "konto" && (
+                      <span className="text-[10px] px-1.5 py-0.2 rounded bg-indigo-500/30 text-indigo-300 font-semibold">
+                        Wybrano
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-[11px] text-zinc-400 mt-0.5 leading-tight">
+                    Gotowe konto do gry (login, hasło, pełny dostęp, dane dostarczane po zakupie).
+                  </p>
+                </div>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setItemType("przedmiot");
+                  if (category === "Konta do gry") setCategory("Przedmioty w grze");
+                }}
+                className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer flex items-start gap-3 ${
+                  itemType === "przedmiot"
+                    ? "bg-amber-500/15 border-amber-500/40 text-white shadow-lg shadow-amber-500/10"
+                    : "bg-zinc-900/60 border-zinc-800 text-zinc-400 hover:border-zinc-700 hover:text-zinc-200"
+                }`}
+              >
+                <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 font-bold text-base ${
+                  itemType === "przedmiot" ? "bg-amber-500 text-black" : "bg-zinc-800 text-zinc-400"
+                }`}>
+                  ⚔️
+                </div>
+                <div>
+                  <div className="text-xs font-bold text-white flex items-center gap-1.5">
+                    <span>Przedmiot w grze</span>
+                    {itemType === "przedmiot" && (
+                      <span className="text-[10px] px-1.5 py-0.2 rounded bg-amber-500/30 text-amber-300 font-semibold">
+                        Wybrano
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-[11px] text-zinc-400 mt-0.5 leading-tight">
+                    Przedmiot, ranga, waluta lub usługa przekazywana w grze na nick klienta.
+                  </p>
+                </div>
+              </button>
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="text-xs font-semibold text-zinc-300 block mb-1.5">Nazwa produktu *</label>
+              <label className="text-xs font-semibold text-zinc-300 block mb-1.5">Nazwa produktu / oferty *</label>
               <input
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="np. ServerHardcore - Bot Discord & Panel"
+                placeholder={itemType === "konto" ? "np. Konto Minecraft Full Access + Płaszcz Optifine" : "np. Zestaw 64x Diamentowy Blok + Ranga VIP"}
                 className="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-500"
               />
             </div>
@@ -416,10 +496,12 @@ export function StoreManagerView({ products: initialProducts }: StoreManagerView
                 onChange={(e) => setCategory(e.target.value)}
                 className="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs text-white focus:outline-none focus:border-zinc-500"
               >
+                <option value="Konta do gry">🎮 Konta do gry</option>
+                <option value="Przedmioty w grze">⚔️ Przedmioty w grze</option>
                 <option value="Bot Discord">Bot Discord</option>
                 <option value="Minecraft">Pluginy Minecraft</option>
                 <option value="Web Platform & Template">Strony & Szablony WWW</option>
-                <option value="Inne">Inne oprogramowanie</option>
+                <option value="Inne">Inne</option>
               </select>
             </div>
           </div>
@@ -523,6 +605,24 @@ export function StoreManagerView({ products: initialProducts }: StoreManagerView
             />
           </div>
 
+          {itemType === "konto" && (
+            <div className="p-4 rounded-2xl bg-indigo-500/10 border border-indigo-500/30 space-y-2">
+              <label className="text-xs font-bold text-indigo-300 block">
+                🎮 Dane logowania do konta (dostarczane po zakupie) *
+              </label>
+              <textarea
+                rows={2}
+                value={accountCredentials}
+                onChange={(e) => setAccountCredentials(e.target.value)}
+                placeholder="Login: email@example.com&#10;Hasło: Haslo123!&#10;Info: Dodatkowe informacje lub kody ratunkowe..."
+                className="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-indigo-500/30 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-indigo-400 font-mono"
+              />
+              <p className="text-[10px] text-zinc-400 leading-relaxed">
+                Kupujący zobaczy te dane w Panelu Klienta i na stronie sukcesu dopiero po kliknięciu <strong>„Odbierz konto”</strong> i zaakceptowaniu braku prawa do zwrotu.
+              </p>
+            </div>
+          )}
+
           <button
             type="submit"
             disabled={isSubmitting}
@@ -553,6 +653,15 @@ export function StoreManagerView({ products: initialProducts }: StoreManagerView
                 <div className="space-y-1">
                   <div className="flex items-center gap-2 flex-wrap">
                     <h3 className="font-bold text-sm text-white">{prod.name}</h3>
+                    {prod.itemType === "konto" ? (
+                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-500/15 border border-indigo-500/30 text-indigo-400">
+                        🎮 Konto do gry
+                      </span>
+                    ) : (
+                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/15 border border-amber-500/30 text-amber-400">
+                        ⚔️ Przedmiot w grze
+                      </span>
+                    )}
                     {prod.badge && (
                       <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/15 border border-emerald-500/30 text-emerald-400">
                         {prod.badge}

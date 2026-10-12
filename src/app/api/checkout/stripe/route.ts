@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { items } = body;
+    const { items, targetGameNick } = body;
 
     if (!items || !Array.isArray(items) || items.length === 0) {
       return NextResponse.json({ error: "Koszyk jest pusty." }, { status: 400 });
@@ -38,6 +38,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Żaden z produktów nie został odnaleziony w sklepie." }, { status: 404 });
     }
 
+    // Ustal dominujący typ zamówienia (konto ma priorytet procedury odbioru)
+    const hasAccount = dbProducts.some((p) => p.itemType === "konto");
+    const orderType = hasAccount ? "konto" : "przedmiot";
+
     const sessionUser = await getSessionUser();
     const origin = request.headers.get("origin") || process.env.NEXT_PUBLIC_APP_URL || "https://deloskiyt-web.vercel.app";
 
@@ -49,7 +53,7 @@ export async function POST(request: Request) {
           currency: "pln",
           product_data: {
             name: prod.name,
-            description: prod.description ? prod.description.slice(0, 200) : "Licencja deloskiyt",
+            description: prod.description ? prod.description.slice(0, 200) : (prod.itemType === "konto" ? "Konto do gry deloskiyt" : "Przedmiot w grze deloskiyt"),
             images: prod.imageUrl ? [prod.imageUrl] : [],
           },
           unit_amount: unitAmount > 0 ? unitAmount : 100, // min 1 PLN
@@ -65,6 +69,8 @@ export async function POST(request: Request) {
       metadata: {
         productIds: JSON.stringify(dbProducts.map((p) => p.id)),
         userId: sessionUser?.id || null,
+        orderType,
+        targetGameNick: targetGameNick ? String(targetGameNick).slice(0, 100) : "",
       },
       success_url: `${origin}/sklep/sukces?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/sklep/anulowano`,

@@ -8,8 +8,11 @@ export function CartDrawer() {
   const { items, removeFromCart, clearCart, totalAmount, isCartOpen, setIsCartOpen } = useCart();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [targetGameNick, setTargetGameNick] = useState("");
 
   if (!isCartOpen) return null;
+
+  const hasItemOrAccount = items.some((i) => i.itemType === "przedmiot" || i.itemType === "konto");
 
   const handleCheckout = async () => {
     if (items.length === 0) return;
@@ -20,7 +23,10 @@ export function CartDrawer() {
       const res = await fetch("/api/checkout/stripe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ items }),
+        body: JSON.stringify({
+          items,
+          targetGameNick: targetGameNick.trim() || null,
+        }),
       });
 
       const data = await res.json();
@@ -109,7 +115,18 @@ export function CartDrawer() {
                       </div>
                     )}
                     <div className="min-w-0 space-y-0.5">
-                      <h4 className="text-xs font-bold text-white truncate">{item.name}</h4>
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <h4 className="text-xs font-bold text-white truncate">{item.name}</h4>
+                        {item.itemType === "konto" ? (
+                          <span className="text-[9px] px-1.5 py-0.2 rounded font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                            🎮 Konto
+                          </span>
+                        ) : (
+                          <span className="text-[9px] px-1.5 py-0.2 rounded font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                            ⚔️ Przedmiot
+                          </span>
+                        )}
+                      </div>
                       <p className="text-[11px] font-semibold text-emerald-400">
                         {item.price ? `${item.price.toFixed(2)} PLN` : "0.00 PLN"}
                       </p>

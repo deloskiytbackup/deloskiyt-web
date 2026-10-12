@@ -37,6 +37,7 @@ export default async function SklepPage() {
       videoUrl: true,
       imageUrl: true,
       downloadUrl: true,
+      itemType: true,
       createdAt: true,
     },
   });

@@ -9,6 +9,7 @@ export interface CartItem {
   version?: string;
   badge?: string | null;
   imageUrl?: string | null;
+  itemType?: string | null;
 }
 
 interface CartContextType {

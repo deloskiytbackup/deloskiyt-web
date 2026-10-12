@@ -21,55 +21,67 @@ model User {
 }
 
 model Order {
-  id          String   @id @default(cuid())
-  orderNumber String   @unique
-  title       String
-  description String?
-  status      String   @default("w_kolejce")
-  price       Float?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  userId      String?
-  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  id                 String    @id @default(cuid())
+  orderNumber        String    @unique
+  title              String
+  description        String?
+  orderType          String    @default("przedmiot") // "konto" | "przedmiot"
+  targetGameNick     String?
+  status             String    @default("w_kolejce") // "w_kolejce" | "oplacone" | "odebrane" | "anulowane"
+  price              Float?
+  accountCredentials String?   // Login / hasło / dane do konta
+  isClaimed          Boolean   @default(false)
+  claimedAt          DateTime?
+  noRefundAccepted   Boolean   @default(false)
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  userId             String?
+  user               User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
 }
 
 model Product {
-  id          String    @id @default(cuid())
-  name        String
-  description String?
-  version     String    @default("1.0.0")
-  category    String    @default("Digital")
-  price       Float?
-  isPublic    Boolean   @default(true)
-  features    String?
-  badge       String?
-  videoUrl    String?
-  imageUrl    String?
-  downloadUrl String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  userId      String?
-  user        User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  licenses    License[]
+  id                 String    @id @default(cuid())
+  name               String
+  description        String?
+  version            String    @default("1.0.0")
+  category           String    @default("Digital")
+  itemType           String    @default("przedmiot") // "konto" | "przedmiot"
+  price              Float?
+  isPublic           Boolean   @default(true)
+  features           String?
+  badge              String?
+  videoUrl           String?
+  imageUrl           String?
+  downloadUrl        String?
+  accountCredentials String?   // Dane do konta (jeśli typ to konto do gry)
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  userId             String?
+  user               User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  licenses           License[]
 }
 
 model License {
-  id              String    @id @default(cuid())
-  licenseKey      String    @unique
-  name            String
-  status          String    @default("active") // "active" | "expired" | "suspended"
-  expiresAt       DateTime?
-  serverIp        String?
-  serverPort      Int?
-  hwid            String?
-  discordUserId   String?
-  lastConnectedAt DateTime?
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  userId          String
-  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  productId       String?
-  product         Product?  @relation(fields: [productId], references: [id], onDelete: SetNull)
+  id                 String    @id @default(cuid())
+  licenseKey         String    @unique
+  name               String
+  status             String    @default("active") // "active" | "expired" | "suspended"
+  expiresAt          DateTime?
+  serverIp           String?
+  serverPort         Int?
+  hwid               String?
+  discordUserId      String?
+  lastConnectedAt    DateTime?
+  accountCredentials String?   // Dane konta przypisane do licencji/zamówienia
+  isClaimed          Boolean   @default(false)
+  claimedAt          DateTime?
+  noRefundAccepted   Boolean   @default(false)
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  userId             String
+  user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId          String?
+  product            Product?  @relation(fields: [productId], references: [id], onDelete: SetNull)
 }
 
 model SiteSetting {

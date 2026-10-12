@@ -9,6 +9,7 @@ export interface StoreProduct {
   description: string | null;
   version: string;
   category: string;
+  itemType?: string | null;
   price: number | null;
   badge: string | null;
   features: string | null;
@@ -31,19 +32,31 @@ export function StoreView({ products }: StoreViewProps) {
   const [searchQuery, setSearchQuery] = useState<string>("");
 
   const categories = [
-    { id: "all", label: "Wszystkie produkty" },
+    { id: "all", label: "Wszystkie oferty" },
+    { id: "konto", label: "🎮 Konta do gry" },
+    { id: "przedmiot", label: "⚔️ Przedmioty w grze" },
     { id: "Bot Discord", label: "Boty Discord" },
     { id: "Minecraft", label: "Pluginy Minecraft" },
     { id: "Web Platform & Template", label: "Strony & Szablony WWW" },
   ];
 
   const filteredProducts = products.filter((prod) => {
-    const matchesCategory =
-      selectedCategory === "all" ||
-      prod.category.toLowerCase().includes(selectedCategory.toLowerCase());
+    let matchesCategory = false;
+    if (selectedCategory === "all") {
+      matchesCategory = true;
+    } else if (selectedCategory === "konto") {
+      matchesCategory = prod.itemType === "konto" || prod.category.toLowerCase().includes("konto");
+    } else if (selectedCategory === "przedmiot") {
+      matchesCategory = prod.itemType === "przedmiot" || prod.category.toLowerCase().includes("przedmiot");
+    } else {
+      matchesCategory = prod.category.toLowerCase().includes(selectedCategory.toLowerCase());
+    }
+
     const matchesSearch =
       prod.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (prod.description && prod.description.toLowerCase().includes(searchQuery.toLowerCase()));
+      (prod.description && prod.description.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (prod.category && prod.category.toLowerCase().includes(searchQuery.toLowerCase()));
+
     return matchesCategory && matchesSearch;
   });
 
@@ -214,7 +227,16 @@ export function StoreView({ products }: StoreViewProps) {
                           {prod.category}
                         </span>
 
-                        <div className="flex items-center gap-1.5">
+                        <div className="flex items-center gap-1.5 flex-wrap justify-end">
+                          {prod.itemType === "konto" ? (
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-500/15 border border-indigo-500/30 text-indigo-400">
+                              🎮 Konto do gry
+                            </span>
+                          ) : (
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 border border-amber-500/30 text-amber-400">
+                              ⚔️ Przedmiot w grze
+                            </span>
+                          )}
                           {prod.badge && (
                             <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider bg-emerald-500/15 border border-emerald-500/30 text-emerald-400">
                               {prod.badge}
@@ -277,7 +299,7 @@ export function StoreView({ products }: StoreViewProps) {
                       </div>
 
                       <span className="text-[11px] text-zinc-500 font-medium">
-                        Dożywotnia licencja
+                        {prod.itemType === "konto" ? "Pełna własność" : "Dostawa w grze"}
                       </span>
                     </div>
 
@@ -291,6 +313,7 @@ export function StoreView({ products }: StoreViewProps) {
                             version: prod.version,
                             badge: prod.badge,
                             imageUrl: prod.imageUrl,
+                            itemType: prod.itemType || "przedmiot",
                           })
                         }
                         className={`w-full py-2.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm ${

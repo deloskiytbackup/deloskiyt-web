@@ -59,6 +59,7 @@ export default async function SklepProductPage({ params }: PageProps) {
       videoUrl: true,
       imageUrl: true,
       downloadUrl: true,
+      itemType: true,
       createdAt: true,
     },
   });

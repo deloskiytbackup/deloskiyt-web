@@ -39,10 +39,20 @@ export async function GET(request: Request) {
       return NextResponse.json({
         success: true,
         orderNumber: existingOrder.orderNumber,
+        orderId: existingOrder.id,
+        orderType: existingOrder.orderType,
+        targetGameNick: existingOrder.targetGameNick,
+        status: existingOrder.status,
+        isClaimed: existingOrder.isClaimed,
+        claimedAt: existingOrder.claimedAt,
+        accountCredentials: existingOrder.isClaimed ? existingOrder.accountCredentials : null,
         licenses: licenses.map((l) => ({
+          id: l.id,
           productName: l.name,
           licenseKey: l.licenseKey,
           downloadUrl: l.product?.downloadUrl,
+          isClaimed: l.isClaimed,
+          accountCredentials: l.isClaimed ? l.accountCredentials : null,
         })),
       });
     }
@@ -60,13 +70,29 @@ export async function GET(request: Request) {
       where: { id: { in: productIds } },
     });
 
+    const metadataOrderType = session.metadata?.orderType;
+    const hasAccount = products.some((p) => p.itemType === "konto");
+    const orderType = metadataOrderType || (hasAccount ? "konto" : "przedmiot");
+    const targetGameNick = session.metadata?.targetGameNick || null;
+
+    // Połącz ewentualne dane konta z produktów
+    const combinedCredentials = products
+      .map((p) => p.accountCredentials)
+      .filter(Boolean)
+      .join("\n---\n") || null;
+
     const orderNumber = `STRIPE-${session.id.slice(-8)}`;
-    await prisma.order.create({
+    const newOrder = await prisma.order.create({
       data: {
         orderNumber,
         title: `Stripe Online: ${products.map((p) => p.name).join(", ")}`,
         description: `Stripe Session: ${session.id} | Email: ${session.customer_details?.email || "brak"}`,
-        status: "oplacone",
+        status: orderType === "konto" ? "do_odbioru" : "oplacone",
+        orderType,
+        targetGameNick,
+        accountCredentials: combinedCredentials,
+        isClaimed: false,
+        noRefundAccepted: false,
         price: (session.amount_total || 0) / 100,
         userId: targetUserId,
       },
@@ -86,19 +112,32 @@ export async function GET(request: Request) {
           expiresAt: null,
           productId: prod.id,
           userId: targetUserId,
+          accountCredentials: prod.accountCredentials || null,
+          isClaimed: false,
+          noRefundAccepted: false,
         },
       });
 
       generatedLicenses.push({
+        id: lic.id,
         productName: prod.name,
         licenseKey: lic.licenseKey,
         downloadUrl: prod.downloadUrl,
+        isClaimed: false,
+        accountCredentials: null,
       });
     }
 
     return NextResponse.json({
       success: true,
       orderNumber,
+      orderId: newOrder.id,
+      orderType,
+      targetGameNick,
+      status: newOrder.status,
+      isClaimed: false,
+      claimedAt: null,
+      accountCredentials: null,
       licenses: generatedLicenses,
     });
   } catch (error: any) {

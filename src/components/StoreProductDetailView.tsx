@@ -76,6 +76,15 @@ export function StoreProductDetailView({ product }: StoreProductDetailViewProps)
               <span className="px-3 py-1 rounded-full text-xs font-semibold bg-zinc-900 border border-zinc-800 text-zinc-400">
                 {product.category}
               </span>
+              {product.itemType === "konto" ? (
+                <span className="px-3 py-1 rounded-full text-xs font-bold bg-indigo-500/15 border border-indigo-500/30 text-indigo-400">
+                  🎮 Konto do gry
+                </span>
+              ) : (
+                <span className="px-3 py-1 rounded-full text-xs font-bold bg-amber-500/15 border border-amber-500/30 text-amber-400">
+                  ⚔️ Przedmiot w grze
+                </span>
+              )}
               {product.badge && (
                 <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/15 border border-emerald-500/30 text-emerald-400">
                   {product.badge}
@@ -101,7 +110,7 @@ export function StoreProductDetailView({ product }: StoreProductDetailViewProps)
                 {product.price ? `${product.price.toFixed(2)} PLN` : "Wycena"}
               </div>
               <span className="text-xs text-emerald-400 font-semibold block mt-1">
-                ✔ Dożywotnia licencja komercyjna
+                {product.itemType === "konto" ? "✔ Pełny dostęp i gwarancja" : "✔ Bezpieczna dostawa w grze"}
               </span>
             </div>
 
@@ -115,6 +124,7 @@ export function StoreProductDetailView({ product }: StoreProductDetailViewProps)
                     version: product.version,
                     badge: product.badge,
                     imageUrl: product.imageUrl,
+                    itemType: product.itemType || "przedmiot",
                   })
                 }
                 className={`w-full py-3.5 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg active:scale-[0.98] ${
@@ -254,8 +264,8 @@ export function StoreProductDetailView({ product }: StoreProductDetailViewProps)
                     1
                   </span>
                   <div>
-                    <h5 className="font-bold text-white">Discord Ticket</h5>
-                    <p className="text-zinc-400 mt-0.5">Otwórz zgłoszenie i opłać zamówienie (BLIK, PSC, Przelew, PayPal).</p>
+                    <h5 className="font-bold text-white">Wybór & Płatność</h5>
+                    <p className="text-zinc-400 mt-0.5">Szybka płatność online przez Stripe lub zgłoszenie Ticket na Discordzie (BLIK, PSC, PayPal).</p>
                   </div>
                 </div>
 
@@ -264,8 +274,14 @@ export function StoreProductDetailView({ product }: StoreProductDetailViewProps)
                     2
                   </span>
                   <div>
-                    <h5 className="font-bold text-white">Dostęp w Panelu Klienta</h5>
-                    <p className="text-zinc-400 mt-0.5">Automatycznie otrzymujesz przypisany produkt i unikalny klucz licencyjny.</p>
+                    <h5 className="font-bold text-white">
+                      {product.itemType === "konto" ? "Dane do Konta" : "Twój Nick w Grze"}
+                    </h5>
+                    <p className="text-zinc-400 mt-0.5">
+                      {product.itemType === "konto"
+                        ? "Dane do logowania oraz instrukcja zmiany zabezpieczeń pojawią się w Panelu Klienta i na e-mailu."
+                        : "Przedmiot zostaje przypisany do podanego przez Ciebie nicku w grze podczas składania zamówienia."}
+                    </p>
                   </div>
                 </div>
 
@@ -274,8 +290,14 @@ export function StoreProductDetailView({ product }: StoreProductDetailViewProps)
                     3
                   </span>
                   <div>
-                    <h5 className="font-bold text-white">Gotowy do Uruchomienia</h5>
-                    <p className="text-zinc-400 mt-0.5">Pobierasz zabezpieczoną paczkę, wpisujesz swój klucz w config i bot działa od razu!</p>
+                    <h5 className="font-bold text-white">
+                      {product.itemType === "konto" ? "Gwarancja & Wsparcie" : "Odbiór na Serwerze"}
+                    </h5>
+                    <p className="text-zinc-400 mt-0.5">
+                      {product.itemType === "konto"
+                        ? "Pełne wsparcie techniczne, brak ryzyka blokady i natychmiastowy dostęp do rozgrywki."
+                        : "Przekazanie przedmiotu na serwerze gry lub przez kontakt z administracją na Discordzie."}
+                    </p>
                   </div>
                 </div>
               </div>
