@@ -21,13 +21,23 @@ export function LicensesTab({ licenses }: LicensesTabProps) {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-          Moje Licencje
-        </h1>
-        <p className="text-xs text-zinc-400 mt-1">
-          Zarządzaj swoimi kluczami licencyjnymi, weryfikacją domen i czasem ważności.
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+            Moje Licencje
+          </h1>
+          <p className="text-xs text-zinc-400 mt-1">
+            Zarządzaj swoimi kluczami licencyjnymi, weryfikacją domen i czasem ważności.
+          </p>
+        </div>
+
+        <Link
+          href="/panel-klienta/konta"
+          className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-amber-400/10 to-amber-500/10 border border-amber-400/30 text-amber-300 hover:text-white hover:border-amber-400 text-xs font-semibold transition-all w-fit"
+        >
+          <span>🎮 Zakupione konta do gier</span>
+          <span className="text-xs">→</span>
+        </Link>
       </div>
 
       {/* Lista licencji */}
@@ -121,10 +131,14 @@ export function LicensesTab({ licenses }: LicensesTabProps) {
                   </button>
 
                   <Link
-                    href={`/panel-klienta/licencje/${lic.id}`}
+                    href={
+                      lic.product?.itemType === "konto"
+                        ? "/panel-klienta/konta"
+                        : `/panel-klienta/licencje/${lic.id}`
+                    }
                     className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
                       lic.product?.itemType === "konto" && !lic.isClaimed
-                        ? "bg-indigo-600 hover:bg-indigo-500 text-white shadow-md shadow-indigo-600/30"
+                        ? "bg-amber-400 hover:bg-amber-300 text-black shadow-md shadow-amber-400/20 font-extrabold"
                         : "bg-white text-black hover:bg-zinc-200"
                     }`}
                   >
